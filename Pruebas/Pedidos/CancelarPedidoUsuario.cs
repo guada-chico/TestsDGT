@@ -47,8 +47,8 @@ public class CancelarPedidoUsuarioTest
 
         await page.Locator(".cesta").ClickAsync();
 
-        var fila777 = page.GetByRole(AriaRole.Row).Filter(new() { HasText = "777" });
-        await fila777.Locator("button").Filter(new() { Has = page.Locator(".pi-trash") }).ClickAsync();
+        var filaArticulo = page.GetByRole(AriaRole.Row).Filter(new() { HasText = "Zapatillas Nike 3.0" });
+        await filaArticulo.Locator("button").Filter(new() { Has = page.Locator(".pi-trash") }).ClickAsync();
 
         var exito = page.Locator(".p-toast");
 
@@ -56,6 +56,6 @@ public class CancelarPedidoUsuarioTest
 
         var textoExito = await exito.InnerTextAsync();
 
-        Assert.That(textoExito, Does.Contain("Pedido eliminado con éxito."));
+        Assert.That(textoExito, Does.Contain("Producto eliminado con éxito"));
     }
 }
