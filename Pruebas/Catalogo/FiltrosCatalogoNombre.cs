@@ -2,7 +2,7 @@ using Microsoft.Playwright;
 using NUnit.Framework;
 using System.Threading.Tasks;
 
-namespace TestFiltrosCatalogoNombre;
+namespace TestsDGT.Pruebas.Catalogo;
 
 public class FiltrosCatalogoNombreTest
 {

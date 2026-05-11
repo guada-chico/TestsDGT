@@ -2,7 +2,7 @@ using Microsoft.Playwright;
 using NUnit.Framework;
 using System.Threading.Tasks;
 
-namespace TestLoginCorrectoDGT;
+namespace TestsDGT.Pruebas.Login;
 
 public class LoginCorrectoTests
 {

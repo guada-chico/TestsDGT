@@ -3,13 +3,13 @@ using Microsoft.Playwright;
 using NUnit.Framework;
 using System.Threading.Tasks;
 
-namespace HacerPedidoUsuario;
+namespace TestsDGT.Pruebas.Pedidos;
 
-public class PedidoUsuarioTest
+public class PedidoExtraordinarioUsuarioTest
 {
     [Test]
 
-    public async Task PedidoExito()
+    public async Task PedidoExtraordinarioExito()
     {
         using var playwright = await Playwright.CreateAsync();
 
