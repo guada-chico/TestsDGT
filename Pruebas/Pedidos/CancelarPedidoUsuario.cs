@@ -5,52 +5,31 @@ using System.Threading.Tasks;
 
 namespace TestsDGT.Pruebas.Pedidos;
 
-public class CancelarPedidoUsuarioTest
+public class CancelarPedidoUsuarioTest : BaseTest
 {
     [Test]
 
     public async Task CancelarPedido()
     {
-        using var playwright = await Playwright.CreateAsync();
-
-        await using var browser = await playwright.Chromium.LaunchAsync(new()
-        {
-            Headless = false,
-            SlowMo = 500
-        });
-
-        var page = await browser.NewPageAsync();
-
-        await page.GotoAsync("http://192.168.200.51:7001/dgt-front/#/login");
-
-        await page.GetByPlaceholder("Usuario (TIP)").FillAsync("A22222A");
-        await page.Locator("input[type='password']").FillAsync("Temporal123!");
-
-        await page.ClickAsync("text=ENTRAR");
-
-        await page.WaitForURLAsync("**/catalogo");
-
-        var filaProducto = page.GetByRole(AriaRole.Row).Filter(new() { HasText = "777" });
+        var filaProducto = Page.GetByRole(AriaRole.Row).Filter(new() { HasText = "777" });
 
         await filaProducto.WaitForAsync();
         await filaProducto.Locator("button.p-button-icon-only").ClickAsync();
 
-        await page.Locator("#talla").ClickAsync();
-        await page.GetByRole(AriaRole.Option, new() { Name = "M" }).ClickAsync();
+        await Page.Locator("#talla").ClickAsync();
+        await Page.GetByRole(AriaRole.Option, new() { Name = "M" }).ClickAsync();
 
-        await page.Locator("#cantidad").ClickAsync();
-        await page.GetByRole(AriaRole.Option, new() { Name = "2" }).ClickAsync();
+        await Page.Locator("#cantidad").ClickAsync();
+        await Page.GetByRole(AriaRole.Option, new() { Name = "2" }).ClickAsync();
+        await Page.GetByRole(AriaRole.Button, new() { Name = "Añadir a la cesta" }).ClickAsync();
 
-        await page.GetByRole(AriaRole.Button, new() { Name = "Añadir a la cesta" }).ClickAsync();
+        await Page.GetByRole(AriaRole.Button, new() { Name = "Close" }).ClickAsync();
 
-        await page.GetByRole(AriaRole.Button, new() { Name = "Close" }).ClickAsync();
+        await Page.Locator(".cesta").ClickAsync();
+        var filaArticulo = Page.GetByRole(AriaRole.Row).Filter(new() { HasText = "Zapatillas Nike 3.0" });
+        await filaArticulo.Locator("button").Filter(new() { Has = Page.Locator(".pi-trash") }).ClickAsync();
 
-        await page.Locator(".cesta").ClickAsync();
-
-        var filaArticulo = page.GetByRole(AriaRole.Row).Filter(new() { HasText = "Zapatillas Nike 3.0" });
-        await filaArticulo.Locator("button").Filter(new() { Has = page.Locator(".pi-trash") }).ClickAsync();
-
-        var exito = page.Locator(".p-toast");
+        var exito = Page.Locator(".p-toast");
 
         await exito.WaitForAsync();
 
