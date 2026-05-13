@@ -2,7 +2,7 @@ using Microsoft.Playwright;
 using NUnit.Framework;
 using System.Threading.Tasks;
 
-namespace TestsDGT.Pruebas.Catalogo;
+namespace TestsDGT.Pruebas.Usuarios.Catalogo;
 
 public class ErrorFiltrosCatalogoTest : BaseTest
 {
