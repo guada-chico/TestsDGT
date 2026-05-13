@@ -12,9 +12,9 @@ public class FiltrosIncidenciasTest : BaseTest
     public async Task FiltroIncidenciaNombreArticulo()
     {
         await Page.GetByText("GUADALUPE").ClickAsync();
-        await Page.GetByRole(AriaRole.Link, new() { Name = "Mis pedidos" }).ClickAsync();
+        await Page.GetByRole(AriaRole.Link, new() { Name = "Incidencias" }).ClickAsync();
 
-        await Page.GotoAsync("http://192.168.200.51:7001/dgt-front/#/orders-list");
+        await Page.GotoAsync("http://192.168.200.51:7001/dgt-front/#/mis-incidencias");
 
         await Page.GetByPlaceholder("Nombre del artículo").FillAsync("DIVISA");
         await Page.Locator("button").Filter(new() { Has = Page.Locator(".pi-filter") }).ClickAsync();
