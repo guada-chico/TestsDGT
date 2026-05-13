@@ -150,6 +150,61 @@ public class FiltrosPedidosUsuarioTest : BaseTest
     }
 
     [Test]
+    public async Task FiltroRangoFecha()
+    {
+        await Page.GetByText("GUADALUPE").ClickAsync();
+        await Page.GetByRole(AriaRole.Link, new() { Name = "Mis pedidos" }).ClickAsync();
+
+        await Page.WaitForURLAsync("**/orders-list");
+
+        var inputDesde = Page.Locator("#startDate input[placeholder='dd/mm/aaaa']");
+
+        await inputDesde.ClearAsync();
+        await inputDesde.FillAsync("18/04/2026");
+
+        await Page.Keyboard.PressAsync("Tab");
+
+        var inputHasta = Page.Locator("#endDate input[placeholder='dd/mm/aaaa']");
+
+        await inputHasta.ClearAsync();
+        await inputHasta.FillAsync("26/04/2026");
+
+        await Page.Keyboard.PressAsync("Tab");
+
+        await Page.Locator("button").Filter(new() { Has = Page.Locator(".pi-filter") }).ClickAsync();
+
+        var cabeceras = await Page.Locator("th").AllInnerTextsAsync();
+        int indiceColumna = cabeceras.ToList().FindIndex(t => t.Contains("Fecha"));
+
+        Assert.That(indiceColumna, Is.GreaterThan(-1), "No se encontró la columna 'Fecha' en la tabla.");
+
+        var primerCelda = Page.Locator("tbody tr td").First;
+        await primerCelda.WaitForAsync(new() { State = WaitForSelectorState.Visible });
+
+        var fechasPedidos = await Page.Locator($"tbody tr td:nth-child({indiceColumna + 1})").AllInnerTextsAsync();
+
+        Assert.That(fechasPedidos, Is.Not.Empty, "El filtro no devolvió ningún pedido (la tabla está vacía).");
+
+        DateTime fechaFiltroDesde = new DateTime(2026, 4, 18);
+        DateTime fechaFiltroHasta = new DateTime(2026, 4, 26);
+
+        foreach (var fechaTexto in fechasPedidos)
+        {
+            if (DateTime.TryParse(fechaTexto.Trim(), out DateTime fechaPedido))
+            {
+                Assert.That(
+                    fechaPedido.Date >= fechaFiltroDesde.Date && fechaPedido.Date <= fechaFiltroHasta.Date,
+                    $"Error: La fecha {fechaPedido:dd/MM/yyyy} está fuera del rango de filtros [{fechaFiltroDesde:dd/MM/yyyy}, {fechaFiltroHasta:dd/MM/yyyy}]"
+                );
+            }
+            else
+            {
+                Assert.Fail($"No se pudo procesar el formato de fecha: '{fechaTexto}'");
+            }
+        }
+    }
+
+    [Test]
 
     public async Task FiltroPedidoCodigo()
     {
