@@ -56,4 +56,120 @@ public class FiltrosPedidosUsuarioTest : BaseTest
             Assert.Fail("El filtro no devolvió la celda con el estado 'En proceso' tras 5 segundos.");
         }
     }
+
+    [Test]
+    public async Task FiltroFechaDesde()
+    {
+        await Page.GetByText("GUADALUPE").ClickAsync();
+        await Page.GetByRole(AriaRole.Link, new() { Name = "Mis pedidos" }).ClickAsync();
+
+        await Page.WaitForURLAsync("**/orders-list");
+
+        await Page.Locator("#startDate").GetByRole(AriaRole.Button, new() { Name = "Choose Date" }).ClickAsync();
+        await Page.FillAsync("#startDate input[placeholder='dd/mm/aaaa']", "18/04/2026");
+        await Page.Keyboard.PressAsync("Tab");
+
+        await Page.Locator("button").Filter(new() { Has = Page.Locator(".pi-filter") }).ClickAsync();
+
+        // Busca en qué posición está la columna que dice "Fecha"
+        var cabeceras = await Page.Locator("th").AllInnerTextsAsync();
+        int indiceColumna = cabeceras.ToList().FindIndex(t => t.Contains("Fecha"));
+
+        Assert.That(indiceColumna, Is.GreaterThan(-1), "No se encontró la columna 'Fecha' en la tabla.");
+
+        var primerCelda = Page.Locator("tbody tr td").First;
+        await primerCelda.WaitForAsync(new() { State = WaitForSelectorState.Visible });
+
+        var fechasPedidos = await Page.Locator($"tbody tr td:nth-child({indiceColumna + 1})").AllInnerTextsAsync();
+
+        Assert.That(fechasPedidos, Is.Not.Empty, "El filtro no devolvió ningún pedido (la tabla está vacía).");
+
+        DateTime fechaFiltro = new DateTime(2026, 4, 18);
+
+        foreach (var fechaTexto in fechasPedidos)
+        {
+            if (DateTime.TryParse(fechaTexto.Trim(), out DateTime fechaPedido))
+            {
+                Assert.That(
+                    fechaPedido.Date >= fechaFiltro.Date,
+                    $"Error: La fecha {fechaPedido:dd/MM/yyyy} es menor que el filtro {fechaFiltro:dd/MM/yyyy}"
+                );
+            }
+            else
+            {
+                Assert.Fail($"No se pudo procesar el formato de fecha: '{fechaTexto}'");
+            }
+        }
+    }
+
+    [Test]
+    public async Task FiltroFechaHasta()
+    {
+        await Page.GetByText("GUADALUPE").ClickAsync();
+        await Page.GetByRole(AriaRole.Link, new() { Name = "Mis pedidos" }).ClickAsync();
+
+        await Page.WaitForURLAsync("**/orders-list");
+
+        var inputHasta = Page.Locator("#endDate input[placeholder='dd/mm/aaaa']");
+
+        await inputHasta.ClearAsync();
+        await inputHasta.FillAsync("18/04/2026");
+
+        await Page.Keyboard.PressAsync("Tab");
+
+        await Page.Locator("button").Filter(new() { Has = Page.Locator(".pi-filter") }).ClickAsync();
+
+        var cabeceras = await Page.Locator("th").AllInnerTextsAsync();
+        int indiceColumna = cabeceras.ToList().FindIndex(t => t.Contains("Fecha"));
+
+        Assert.That(indiceColumna, Is.GreaterThan(-1), "No se encontró la columna 'Fecha' en la tabla.");
+
+        var primerCelda = Page.Locator("tbody tr td").First;
+        await primerCelda.WaitForAsync(new() { State = WaitForSelectorState.Visible });
+
+        var fechasPedidos = await Page.Locator($"tbody tr td:nth-child({indiceColumna + 1})").AllInnerTextsAsync();
+
+        Assert.That(fechasPedidos, Is.Not.Empty, "El filtro no devolvió ningún pedido (la tabla está vacía).");
+
+        DateTime fechaFiltro = new DateTime(2026, 4, 18);
+
+        foreach (var fechaTexto in fechasPedidos)
+        {
+            if (DateTime.TryParse(fechaTexto.Trim(), out DateTime fechaPedido))
+            {
+                Assert.That(
+                    fechaPedido.Date <= fechaFiltro.Date,
+                    $"Error: La fecha {fechaPedido:dd/MM/yyyy} es mayor que el filtro {fechaFiltro:dd/MM/yyyy}"
+                );
+            }
+            else
+            {
+                Assert.Fail($"No se pudo procesar el formato de fecha: '{fechaTexto}'");
+            }
+        }
+    }
+
+    [Test]
+
+    public async Task FiltroPedidoCodigo()
+    {
+        await Page.GetByText("GUADALUPE").ClickAsync();
+        await Page.GetByRole(AriaRole.Link, new() { Name = "Mis pedidos" }).ClickAsync();
+
+        await Page.GotoAsync("http://192.168.200.51:7001/dgt-front/#/orders-list");
+
+        await Page.GetByPlaceholder("Código").FillAsync("21488");
+        await Page.Locator("button").Filter(new() { Has = Page.Locator(".pi-filter") }).ClickAsync();
+
+        var celdaDivisa = Page.Locator("td").Filter(new() { HasText = "21488" });
+
+        try
+        {
+            await Assertions.Expect(celdaDivisa).ToBeVisibleAsync(new() { Timeout = 5000 });
+        }
+        catch (Exception)
+        {
+            Assert.Fail("El filtro no devolvió la celda con el Código '21488' tras 5 segundos.");
+        }
+    }
 }
