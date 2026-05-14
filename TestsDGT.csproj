@@ -28,4 +28,35 @@
     </None>
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Paginas\Administrador\GestionManuales\" />
+    <Folder Include="Paginas\Administrador\FaqContactoAdm\" />
+    <Folder Include="Paginas\Administrador\GestionUsuarios\" />
+    <Folder Include="Paginas\Administrador\MenuNotificaciones\" />
+    <Folder Include="Paginas\Administrador\GestionLotes\" />
+    <Folder Include="Paginas\Administrador\Plantillas\" />
+    <Folder Include="Paginas\Administrador\PermisosUsuario\" />
+    <Folder Include="Paginas\Administrador\PuntosEntrega\" />
+    <Folder Include="Paginas\Almacen\GestionArticulos\" />
+    <Folder Include="Paginas\Almacen\EntregaInmediata\" />
+    <Folder Include="Paginas\Almacen\Stock\" />
+    <Folder Include="Paginas\Almacen\PreparacionPedidos\" />
+    <Folder Include="Paginas\Informes\Devoluciones\" />
+    <Folder Include="Paginas\Informes\InformeDinamico\" />
+    <Folder Include="Paginas\Informes\Revista\" />
+    <Folder Include="Paginas\Informes\PrevisionAnual\" />
+    <Folder Include="Paginas\Informes\PedidosInf\" />
+    <Folder Include="Paginas\Peticiones\GeneracionAlbaran\" />
+    <Folder Include="Paginas\Peticiones\EntregasDestacamento\" />
+    <Folder Include="Paginas\Peticiones\GestionIncidencias\" />
+    <Folder Include="Paginas\Peticiones\GestionDevoluciones\" />
+    <Folder Include="Paginas\Peticiones\ResolucionPeticiones\" />
+    <Folder Include="Paginas\Suministro\Conformidad\" />
+    <Folder Include="Paginas\Suministro\Proveedores\" />
+    <Folder Include="Paginas\Suministro\OrdenProduccion\" />
+    <Folder Include="Paginas\Usuarios\ManualesUsu\" />
+    <Folder Include="Paginas\Usuarios\FaqContactoUsu\" />
+    <Folder Include="Paginas\Usuarios\Perfil\" />
+  </ItemGroup>
+
 </Project>
