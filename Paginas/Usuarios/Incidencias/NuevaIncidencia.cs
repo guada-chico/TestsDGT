@@ -3,7 +3,7 @@ using Microsoft.Playwright;
 using NUnit.Framework;
 using System.Threading.Tasks;
 
-namespace TestsDGT.Pruebas.Incidencias;
+namespace TestsDGT.Paginas.Incidencias;
 
 public class NuevaIncidenciaTest : BaseTest
 {

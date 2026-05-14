@@ -3,18 +3,18 @@ using Microsoft.Playwright;
 using NUnit.Framework;
 using System.Threading.Tasks;
 
-namespace TestsDGT.Pruebas.Usuarios.Pedidos;
+namespace TestsDGT.Paginas.Usuarios.Incidencias;
 
-public class FiltrosPedidosUsuarioTest : BaseTest
+public class FiltrosIncidenciasTest : BaseTest
 {
     [Test]
 
-    public async Task FiltroPedidoNombreArticulo()
+    public async Task FiltroIncidenciaNombreArticulo()
     {
         await Page.GetByText("GUADALUPE").ClickAsync();
-        await Page.GetByRole(AriaRole.Link, new() { Name = "Mis pedidos" }).ClickAsync();
+        await Page.GetByRole(AriaRole.Link, new() { Name = "Incidencias" }).ClickAsync();
 
-        await Page.GotoAsync("http://192.168.200.51:7001/dgt-front/#/orders-list");
+        await Page.GotoAsync("http://192.168.200.51:7001/dgt-front/#/mis-incidencias");
 
         await Page.GetByPlaceholder("Nombre del artículo").FillAsync("DIVISA");
         await Page.Locator("button").Filter(new() { Has = Page.Locator(".pi-filter") }).ClickAsync();
@@ -33,12 +33,12 @@ public class FiltrosPedidosUsuarioTest : BaseTest
 
     [Test]
 
-    public async Task FiltroPedidoEstado()
+    public async Task FiltroIncidenciaEstado()
     {
         await Page.GetByText("GUADALUPE").ClickAsync();
-        await Page.GetByRole(AriaRole.Link, new() { Name = "Mis pedidos" }).ClickAsync();
+        await Page.GetByRole(AriaRole.Link, new() { Name = "Mis incidencias" }).ClickAsync();
 
-        await Page.GotoAsync("http://192.168.200.51:7001/dgt-front/#/orders-list");
+        await Page.GotoAsync("http://192.168.200.51:7001/dgt-front/#/mis-incidencias");
 
         await Page.GetByRole(AriaRole.Combobox, new() { Name = "Todos" }).ClickAsync();
         await Page.GetByText("En proceso").ClickAsync();
@@ -61,9 +61,9 @@ public class FiltrosPedidosUsuarioTest : BaseTest
     public async Task FiltroFechaDesde()
     {
         await Page.GetByText("GUADALUPE").ClickAsync();
-        await Page.GetByRole(AriaRole.Link, new() { Name = "Mis pedidos" }).ClickAsync();
+        await Page.GetByRole(AriaRole.Link, new() { Name = "Mis incidencias" }).ClickAsync();
 
-        await Page.WaitForURLAsync("**/orders-list");
+        await Page.WaitForURLAsync("**/mis-incidencias");
 
         await Page.Locator("#startDate").GetByRole(AriaRole.Button, new() { Name = "Choose Date" }).ClickAsync();
         await Page.FillAsync("#startDate input[placeholder='dd/mm/aaaa']", "18/04/2026");
