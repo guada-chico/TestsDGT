@@ -3,7 +3,7 @@ using Microsoft.Playwright;
 using NUnit.Framework;
 using System.Threading.Tasks;
 
-namespace TestsDGT.Paginas.Usuarios.Pedidos;
+namespace TestsDGT.Paginas.Usuarios.PedidosExtraordinariosUsu;
 
 public class PedidoExtraordinarioUsuarioTest : BaseTest
 {

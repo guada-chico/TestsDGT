@@ -2,7 +2,7 @@ using Microsoft.Playwright;
 
 namespace TestsDGT.Paginas;
 
-public class PedidosPage
+public class MisPedidosPage
 {
     private readonly IPage _page;
 
@@ -32,7 +32,7 @@ public class PedidosPage
     private ILocator IrMisPedidos => _page.GetByRole(AriaRole.Button, new() { Name = "Mis pedidos" });
     private ILocator InputFiltroNombre => _page.GetByPlaceholder("Nombre del artículo");
     private ILocator InputFiltroCodigo => _page.GetByPlaceholder("Código");
-    private ILocator EstadoPedido => _page.GetByRole(AriaRole.Combobox, new() { Name = "Todos" });
+    private ILocator EstadoPedido => _page.Locator("p-dropdown").GetByRole(AriaRole.Combobox);
     private ILocator FechaDesde => _page.Locator("#startDate input[placeholder='dd/mm/aaaa']");
     private ILocator FechaHasta => _page.Locator("#endDate input[placeholder='dd/mm/aaaa']");
     private ILocator BotonFiltrar => _page.Locator("button").Filter(new() { Has = _page.Locator(".pi-filter") });
@@ -42,7 +42,7 @@ public class PedidosPage
     private ILocator FilasTabla => _page.Locator("tbody tr");
     private ILocator CeldaTexto(string texto) => _page.Locator("td").Filter(new() { HasText = texto });
 
-    public PedidosPage(IPage page)
+    public MisPedidosPage(IPage page)
     {
         _page = page;
     }
@@ -125,8 +125,14 @@ public class PedidosPage
     public async Task FiltrarPorEstadoAsync(string estado)
     {
         await EstadoPedido.ClickAsync();
-        await _page.GetByText(estado).ClickAsync();
+        var opcion = _page.Locator("p-dropdownitem").GetByText(estado, new() { Exact = true });
+
+        await opcion.WaitForAsync(new() { State = WaitForSelectorState.Visible, Timeout = 3000 });
+        await opcion.ClickAsync();
+
         await BotonFiltrar.ClickAsync();
+
+        await _page.WaitForLoadStateAsync(LoadState.NetworkIdle);
     }
 
     public async Task FiltrarPorRangoFechasAsync(string desde, string hasta)

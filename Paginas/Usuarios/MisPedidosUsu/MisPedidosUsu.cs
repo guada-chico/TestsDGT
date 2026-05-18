@@ -7,12 +7,12 @@ namespace TestsDGT.Paginas.Usuarios.Pedidos;
 [TestFixture]
 public class PedidosUsuarioTest : BaseTest
 {
-    private PedidosPage _pedidosPage;
+    private MisPedidosPage _pedidosPage;
 
     [SetUp]
     public void SetupPagina()
     {
-        _pedidosPage = new PedidosPage(Page);
+        _pedidosPage = new MisPedidosPage(Page);
     }
 
     [Test]

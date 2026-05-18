@@ -58,7 +58,7 @@ public class FiltrosIncidenciasTest : BaseTest
     }
 
     [Test]
-    public async Task FiltroFechaDesde()
+    public async Task FiltroIncidenciaFechaDesde()
     {
         await Page.GetByText("GUADALUPE").ClickAsync();
         await Page.GetByRole(AriaRole.Link, new() { Name = "Mis incidencias" }).ClickAsync();
@@ -103,12 +103,12 @@ public class FiltrosIncidenciasTest : BaseTest
     }
 
     [Test]
-    public async Task FiltroFechaHasta()
+    public async Task FiltroIncidenciaFechaHasta()
     {
         await Page.GetByText("GUADALUPE").ClickAsync();
-        await Page.GetByRole(AriaRole.Link, new() { Name = "Mis pedidos" }).ClickAsync();
+        await Page.GetByRole(AriaRole.Link, new() { Name = "Mis incidencias" }).ClickAsync();
 
-        await Page.WaitForURLAsync("**/orders-list");
+        await Page.WaitForURLAsync("**/mis-incidencias");
 
         var inputHasta = Page.Locator("#endDate input[placeholder='dd/mm/aaaa']");
 
@@ -150,12 +150,12 @@ public class FiltrosIncidenciasTest : BaseTest
     }
 
     [Test]
-    public async Task FiltroRangoFecha()
+    public async Task FiltroIncidenciasRangoFecha()
     {
         await Page.GetByText("GUADALUPE").ClickAsync();
-        await Page.GetByRole(AriaRole.Link, new() { Name = "Mis pedidos" }).ClickAsync();
+        await Page.GetByRole(AriaRole.Link, new() { Name = "Mis incidencias" }).ClickAsync();
 
-        await Page.WaitForURLAsync("**/orders-list");
+        await Page.WaitForURLAsync("**/mis-incidencias");
 
         var inputDesde = Page.Locator("#startDate input[placeholder='dd/mm/aaaa']");
 
@@ -206,12 +206,12 @@ public class FiltrosIncidenciasTest : BaseTest
 
     [Test]
 
-    public async Task FiltroPedidoCodigo()
+    public async Task FiltroIncidenciasCodigo()
     {
         await Page.GetByText("GUADALUPE").ClickAsync();
-        await Page.GetByRole(AriaRole.Link, new() { Name = "Mis pedidos" }).ClickAsync();
+        await Page.GetByRole(AriaRole.Link, new() { Name = "Mis incidencias" }).ClickAsync();
 
-        await Page.GotoAsync("http://192.168.200.51:7001/dgt-front/#/orders-list");
+        await Page.GotoAsync("http://192.168.200.51:7001/dgt-front/#/mis-incidencias");
 
         await Page.GetByPlaceholder("Código").FillAsync("21488");
         await Page.Locator("button").Filter(new() { Has = Page.Locator(".pi-filter") }).ClickAsync();
