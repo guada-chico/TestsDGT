@@ -2,10 +2,10 @@ using Microsoft.Playwright;
 using NUnit.Framework;
 using TestsDGT.Paginas;
 
-namespace TestsDGT.Paginas.Usuarios.Pedidos;
+namespace TestsDGT.Paginas.Usuarios.MisPedidosUsu;
 
 [TestFixture]
-public class PedidosUsuarioTest : BaseTest
+public class MisPedidosUsuTest : BaseTest
 {
     private MisPedidosPage _pedidosPage;
 

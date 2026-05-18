@@ -1,6 +1,6 @@
 using Microsoft.Playwright;
 
-namespace TestsDGT.Paginas;
+namespace TestsDGT.Paginas.Usuarios.MisPedidosUsu;
 
 public class MisPedidosPage
 {
@@ -28,8 +28,6 @@ public class MisPedidosPage
     private ILocator BuscadorUsuario => _page.GetByRole(AriaRole.Searchbox, new() { Name = "Buscar usuario..." });
 
     // Localizadores filtros
-    private ILocator MenuUsuario => _page.GetByRole(AriaRole.Button, new() { Name = "GUADALUPE" });
-    private ILocator IrMisPedidos => _page.GetByRole(AriaRole.Button, new() { Name = "Mis pedidos" });
     private ILocator InputFiltroNombre => _page.GetByPlaceholder("Nombre del artículo");
     private ILocator InputFiltroCodigo => _page.GetByPlaceholder("Código");
     private ILocator EstadoPedido => _page.Locator("p-dropdown").GetByRole(AriaRole.Combobox);
