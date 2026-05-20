@@ -17,7 +17,14 @@ public class LoginTests
     public async Task SetupPagina()
     {
         Playwright = await Microsoft.Playwright.Playwright.CreateAsync();
-        Browser = await Playwright.Chromium.LaunchAsync(new() { Headless = false, SlowMo = 500 });
+        bool enServidor = Environment.GetEnvironmentVariable("AZURE_DEVOPS") == "true";
+
+        Browser = await Playwright.Chromium.LaunchAsync(new()
+        {
+            Headless = enServidor,
+            SlowMo = enServidor ? 0 : 500
+        });
+
         Page = await Browser.NewPageAsync();
 
         _loginPage = new LoginPage(Page);

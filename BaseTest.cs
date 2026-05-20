@@ -13,10 +13,12 @@ public class BaseTest
     public async Task Setup()
     {
         Playwright = await Microsoft.Playwright.Playwright.CreateAsync();
+
+        bool enServidor = Environment.GetEnvironmentVariable("AZURE_DEVOPS") == "true";
         Browser = await Playwright.Chromium.LaunchAsync(new()
         {
-            Headless = false,
-            SlowMo = 500
+            Headless = enServidor,
+            SlowMo = enServidor ? 0 : 500
         });
 
         Page = await Browser.NewPageAsync();

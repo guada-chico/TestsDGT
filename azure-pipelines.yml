@@ -1,0 +1,51 @@
+trigger:
+- main 
+
+pool:
+  vmImage: 'windows-latest'
+
+variables:
+  solution: '**/*.sln'
+  buildConfiguration: 'Release'
+  AZURE_DEVOPS: 'true'
+
+steps:
+- task: UseDotNet@2
+  displayName: 'Instalar SDK de .NET 8.0'
+  inputs:
+    packageType: 'sdk'
+    version: '8.x'
+
+- task: DotNetCoreCLI@2
+  displayName: 'Restaurar paquetes NuGet'
+  inputs:
+    command: 'restore'
+    projects: '$(solution)'
+
+- task: DotNetCoreCLI@2
+  displayName: 'Compilar proyecto'
+  inputs:
+    command: 'build'
+    projects: '$(solution)'
+    arguments: '--configuration $(buildConfiguration)'
+
+- script: |
+    dotnet tool install --global Microsoft.Playwright.CLI
+    playwright install chromium
+  displayName: 'Instalar Navegadores de Playwright'
+
+- task: DotNetCoreCLI@2
+  displayName: 'Ejecutar Suite de Tests DGT'
+  inputs:
+    command: 'test'
+    projects: '$(solution)'
+    arguments: '--configuration $(buildConfiguration) --logger trx'
+  continueOnError: true 
+
+- task: PublishTestResults@2
+  displayName: 'Publicar Reporte de Pruebas'
+  inputs:
+    testResultsFormat: 'VSTest'
+    testResultsFiles: '**/*.trx'
+    mergeTestResults: true
+    failTaskOnFailedTests: true

@@ -24,6 +24,7 @@ public class CatalogoPage
     {
         await InputBuscarCodigo.FillAsync(codigo);
         await BotonFiltrar.ClickAsync();
+
         await _page.WaitForLoadStateAsync(LoadState.NetworkIdle);
     }
 
@@ -31,11 +32,15 @@ public class CatalogoPage
     {
         await InputBuscarNombre.FillAsync(nombre);
         await BotonFiltrar.ClickAsync();
+
+        await _page.WaitForLoadStateAsync(LoadState.NetworkIdle);
     }
 
     public async Task LimpiarFiltrosAsync()
     {
         await BotonLimpiar.ClickAsync();
+
+        await _page.WaitForLoadStateAsync(LoadState.NetworkIdle);
     }
 
     public async Task<bool> ExisteTextoEnTablaAsync(string texto)
@@ -51,5 +56,10 @@ public class CatalogoPage
     public async Task<int> ObtenerNumeroFilasAsync()
     {
         return await FilasTabla.CountAsync();
+    }
+
+    public async Task<string> ObtenerTextoFiltroNombreAsync()
+    {
+        return await InputBuscarNombre.InputValueAsync();
     }
 }
