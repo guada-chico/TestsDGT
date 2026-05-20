@@ -35,8 +35,6 @@ public class FiltrosCatalogoTest : BaseTest
 
         Assert.That(await _catalogoPage.ExisteTextoEnTablaAsync(nombreProd), Is.True);
         Assert.That(await _catalogoPage.ObtenerNumeroFilasAsync(), Is.EqualTo(1));
-
-        await _catalogoPage.LimpiarFiltrosAsync();
     }
 
     [Test]
@@ -47,8 +45,6 @@ public class FiltrosCatalogoTest : BaseTest
 
         var mensajeVacio = await _catalogoPage.ExisteTextoEnTablaAsync("No hay resultados para tu búsqueda");
         Assert.That(mensajeVacio, Is.True);
-
-        await _catalogoPage.LimpiarFiltrosAsync();
     }
 
     [Test]
@@ -59,7 +55,30 @@ public class FiltrosCatalogoTest : BaseTest
 
         var mensajeVacio = await _catalogoPage.ExisteTextoEnTablaAsync("No hay resultados para tu búsqueda");
         Assert.That(mensajeVacio, Is.True);
+    }
+
+    [Test]
+    public async Task LimpiarFiltrosCatalogo()
+    {
+        int totalFilasOriginales = await _catalogoPage.ObtenerNumeroFilasAsync();
+
+        string nombreProd = "Zapatillas deportivas de Nike";
+        await _catalogoPage.FiltrarPorNombreAsync(nombreProd);
+
+        int filasFiltradas = await _catalogoPage.ObtenerNumeroFilasAsync();
 
         await _catalogoPage.LimpiarFiltrosAsync();
+
+        int filasTrasLimpiar = await _catalogoPage.ObtenerNumeroFilasAsync();
+
+        Assert.That(filasTrasLimpiar, Is.EqualTo(totalFilasOriginales),
+            "La tabla no recuperó todos los registros originales tras limpiar los filtros.");
+
+        Assert.That(totalFilasOriginales, Is.GreaterThan(filasFiltradas),
+            "El filtro de prueba no redujo el tamaño de la tabla, usa un artículo diferente.");
+
+        string textoFiltro = await _catalogoPage.ObtenerTextoFiltroNombreAsync();
+        Assert.That(textoFiltro, Is.Empty,
+            "El cuadro de búsqueda por nombre no se vació al pulsar el botón de limpiar.");
     }
 }
