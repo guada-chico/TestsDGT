@@ -8,12 +8,12 @@ namespace TestsDGT.Paginas.Usuarios.IncidenciasUsu;
 [TestFixture]
 public class IncidenciasUsuTest : BaseTest
 {
-    private IncidenciasPage _incidenciasPage;
+    private IncidenciasUsuPage _incidenciasPage;
 
     [SetUp]
     public void SetupPagina()
     {
-        _incidenciasPage = new IncidenciasPage(Page);
+        _incidenciasPage = new IncidenciasUsuPage(Page);
     }
 
     [Test]
@@ -23,7 +23,7 @@ public class IncidenciasUsuTest : BaseTest
         await _incidenciasPage.IrAIncidencias();
 
         await _incidenciasPage.CrearNuevaIncidenciaAsync(
-            titulo: "Camiseta mal tallada",
+            titulo: "Incidencia Prueba",
             prioridad: "2",
             motivo: "Motivo incidencia",
             idPedido: "123",
@@ -31,7 +31,7 @@ public class IncidenciasUsuTest : BaseTest
             descripcion: "descripción incidencia"
         );
 
-        await _incidenciasPage.VerificarIncidenciaCreadaAsync("Camiseta mal tallada");
+        await _incidenciasPage.VerificarIncidenciaCreadaAsync("Incidencia Prueba");
     }
 
     [Test]
@@ -39,6 +39,7 @@ public class IncidenciasUsuTest : BaseTest
     public async Task NuevaIncidencia_ErrorFaltanDatos()
     {
         await _incidenciasPage.IrAIncidencias();
+
         await _incidenciasPage.CrearNuevaIncidenciaAsync(
             titulo: "",
             prioridad: "2",
@@ -54,24 +55,62 @@ public class IncidenciasUsuTest : BaseTest
 
     [Test]
 
-    public async Task FiltroIncidenciaNombreArticulo()
+    public async Task FiltroIncidenciaTitulo()
     {
         await _incidenciasPage.IrAIncidencias();
 
-        await _incidenciasPage.VerificarIncidenciaCreadaAsync("Camiseta mal tallada");
+        string tituloIncidencia = "Incidencia Prueba";
+        await _incidenciasPage.FiltrarPorTituloIncidenciaAsync(tituloIncidencia);
 
-        await Page.GetByPlaceholder("Nombre del artículo").FillAsync("DIVISA");
-        await Page.Locator("button").Filter(new() { Has = Page.Locator(".pi-filter") }).ClickAsync();
+        Assert.That(await _incidenciasPage.VerificarIncidenciaCreadaAsync(tituloIncidencia), Is.True);
+        Assert.That(await _incidenciasPage.ObtenerNumeroFilasIncidenciasAsync(), Is.GreaterThan(0));
+    }
 
-        var celdaDivisa = Page.Locator("td").Filter(new() { HasText = "DIVISA" });
+    [Test]
 
-        try
-        {
-            await Assertions.Expect(celdaDivisa).ToBeVisibleAsync(new() { Timeout = 5000 });
-        }
-        catch (Exception)
-        {
-            Assert.Fail("El filtro no devolvió la celda con el nombre 'DIVISA' tras 5 segundos.");
-        }
+    public async Task FiltroIncidenciaFecha()
+    {
+        await _incidenciasPage.IrAIncidencias();
+
+        string fechaIncidencia = "18/05/2026";
+        await _incidenciasPage.FiltrarPorFechaIncidenciaAsync(fechaIncidencia);
+
+        Assert.That(await _incidenciasPage.ObtenerNumeroFilasIncidenciasAsync(), Is.GreaterThan(0));
+    }
+
+    [Test]
+
+    public async Task FiltroIncidenciaEstado()
+    {
+        await _incidenciasPage.IrAIncidencias();
+
+        string estado = "En curso";
+        await _incidenciasPage.FiltrarPorEstadoIncidenciaAsync(estado);
+
+        Assert.That(await _incidenciasPage.ObtenerNumeroFilasIncidenciasAsync(), Is.GreaterThan(0));
+        Assert.That(await _incidenciasPage.VerificarIncidenciaCreadaAsync(estado), Is.True);
+    }
+
+    [Test]
+    public async Task LimpiarFiltrosIncidencias()
+    {
+        await _incidenciasPage.IrAIncidencias();
+
+        int totalFilasOriginales = await _incidenciasPage.ObtenerNumeroFilasIncidenciasAsync();
+
+        string titulo = "Incidencia Prueba";
+        await _incidenciasPage.FiltrarPorTituloIncidenciaAsync(titulo);
+
+        int filasFiltradas = await _incidenciasPage.ObtenerNumeroFilasIncidenciasAsync();
+
+        await _incidenciasPage.LimpiarFiltrosAsync();
+
+        int filasTrasLimpiar = await _incidenciasPage.ObtenerNumeroFilasIncidenciasAsync();
+
+        Assert.That(filasTrasLimpiar, Is.EqualTo(totalFilasOriginales),
+            "La tabla no recuperó todos los registros originales tras limpiar los filtros.");
+
+        Assert.That(totalFilasOriginales, Is.GreaterThan(filasFiltradas),
+            "El filtro de prueba no redujo el tamaño de la tabla, usa un artículo diferente.");
     }
 }
