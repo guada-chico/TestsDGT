@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace TestsDGT.Paginas.Usuarios.ManualesUsu;
 
-public class ManualesUsuPage
+public class    ManualesUsuPage
 {
     private readonly IPage _page;
     
