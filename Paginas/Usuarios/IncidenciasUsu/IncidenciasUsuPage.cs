@@ -20,7 +20,7 @@ public class IncidenciasUsuPage
     private ILocator ToastMensaje => _page.Locator(".p-toast");
 
     private ILocator InputFiltroTituloIncidencia => _page.GetByPlaceholder("Buscar por título");
-    private ILocator InputFiltroFechaDesde => _page.Locator("p-calendar input[placeholder='dd/mm/aaaa']");
+    private ILocator InputFiltroFechaIncidencia => _page.Locator("p-calendar input[placeholder='dd/mm/aaaa']");
     private ILocator BotonAplicarFiltro => _page.Locator("button").Filter(new() { Has = _page.Locator(".pi-filter") });
     private ILocator BotonLimpiarFiltros => _page.Locator("button").Filter(new() { Has = _page.Locator(".pi-times") });
     private ILocator FilasTablaIncidencias => _page.Locator("tbody tr");
@@ -101,8 +101,8 @@ public class IncidenciasUsuPage
 
     public async Task FiltrarPorFechaIncidenciaAsync(string fechaIncidencia)
     {
-        await InputFiltroFechaDesde.ClearAsync();
-        await InputFiltroFechaDesde.FillAsync(fechaIncidencia);
+        await InputFiltroFechaIncidencia.ClearAsync();
+        await InputFiltroFechaIncidencia.FillAsync(fechaIncidencia);
         await _page.Keyboard.PressAsync("Tab");
         await BotonAplicarFiltro.ClickAsync();
         await _page.WaitForLoadStateAsync(LoadState.NetworkIdle);
