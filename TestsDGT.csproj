@@ -53,7 +53,6 @@
     <Folder Include="Paginas\Peticiones\ResolucionPeticiones\" />
     <Folder Include="Paginas\Suministro\Conformidad\" />
     <Folder Include="Paginas\Suministro\Proveedores\" />
-    <Folder Include="Paginas\Suministro\OrdenProduccion\" />
     <Folder Include="Paginas\Usuarios\PerfilUsu\" />
   </ItemGroup>
 
