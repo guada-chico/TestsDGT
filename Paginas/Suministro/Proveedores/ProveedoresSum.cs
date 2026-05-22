@@ -34,6 +34,8 @@ public class ProvedoresSumTest : BaseTest
             observaciones: "Observaciones prueba"
         );
 
+        await _proveedoresSumPage.GuadarNuevoProveedorAsync();
+
         var mensaje = await _proveedoresSumPage.ObtenerMensajeToastAsync();
         Assert.That(mensaje, Does.Contain("Proveedor guardado"));
     }
@@ -43,8 +45,10 @@ public class ProvedoresSumTest : BaseTest
     {
         await _proveedoresSumPage.IrAProveedoresSum();
 
-        await _proveedoresSumPage.CancelarCreacionProveedorAsync(
-            nombre: "Proveedor de Prueba Test",
+        int filasIniciales = await _proveedoresSumPage.ObtenerNumeroFilasProveedoresAsync();
+
+        await _proveedoresSumPage.CrearNuevoProveedorAsync(
+            nombre: "Proveedor Cancelar Creación",
             razonSocial: "S.L.",
             cifNif: "A1234567B",
             web: "www.proveedorprueba.com",
@@ -56,8 +60,15 @@ public class ProvedoresSumTest : BaseTest
             observaciones: "Observaciones prueba"
         );
 
-        bool existe = await _proveedoresSumPage.VerificarProveedorCreadaAsync("Cancelar");
-        Assert.That(existe, Is.False);
+        await _proveedoresSumPage.CancelarCreacionProveedorAsync();
+
+        string nombreProveedor = "Proveedor Cancelar Creación";
+
+        bool existe = await _proveedoresSumPage.VerificarProveedorCreadaAsync(nombreProveedor);
+        Assert.That(existe, Is.False, "El proveedor se ha guardado a pesar de haber pulsado cancelar.");
+
+        int filasFinales = await _proveedoresSumPage.ObtenerNumeroFilasProveedoresAsync();
+        Assert.That(filasFinales, Is.EqualTo(filasIniciales), "El número de filas ha cambiado, ¡se ha creado un proveedor por error!");
     }
 
     [Test]
@@ -89,6 +100,7 @@ public class ProvedoresSumTest : BaseTest
     {
         await _proveedoresSumPage.IrAProveedoresSum();
 
+        await _proveedoresSumPage.LimpiarFiltrosAsync();
         int totalFilasOriginales = await _proveedoresSumPage.ObtenerNumeroFilasProveedoresAsync();
 
         string codigo = "305";
@@ -96,15 +108,14 @@ public class ProvedoresSumTest : BaseTest
 
         int filasFiltradas = await _proveedoresSumPage.ObtenerNumeroFilasProveedoresAsync();
 
+        Assert.That(totalFilasOriginales, Is.GreaterThan(filasFiltradas), "El filtro no redujo las filas.");
+
         await _proveedoresSumPage.LimpiarFiltrosAsync();
 
         int filasTrasLimpiar = await _proveedoresSumPage.ObtenerNumeroFilasProveedoresAsync();
 
         Assert.That(filasTrasLimpiar, Is.EqualTo(totalFilasOriginales),
-            "La tabla no recuperó todos los registros originales tras limpiar los filtros.");
-
-        Assert.That(totalFilasOriginales, Is.GreaterThan(filasFiltradas),
-            "El filtro de prueba no redujo el tamaño de la tabla, usa un artículo diferente.");
+        $"Esperábamos {totalFilasOriginales} filas, pero se obtuvieron {filasTrasLimpiar}");
     }
 
     [Test]
@@ -119,12 +130,35 @@ public class ProvedoresSumTest : BaseTest
 
         await _proveedoresSumPage.EditarProveedorAsync(nombreOriginal, nombreNuevo);
 
+        await _proveedoresSumPage.GuardarCambiosProveedorsync();
+
         var mensaje = await _proveedoresSumPage.ObtenerMensajeToastAsync();
         Assert.That(mensaje, Does.Contain("Proveedor actualizado"));
 
         await _proveedoresSumPage.LimpiarFiltrosAsync();
         await _proveedoresSumPage.FiltrarPorCodigoNombreProveedorAsync(nombreNuevo);
         Assert.That(await _proveedoresSumPage.VerificarProveedorCreadaAsync(nombreNuevo), Is.True);
+    }
+
+    [Test]
+    public async Task EditarFichaProveedor_CancelarEdicion()
+    {
+        await _proveedoresSumPage.IrAProveedoresSum();
+
+        string nombreOriginal = "RopitaChulita";
+        string nombreNoGuardado = "Proveedor no guarda";
+
+        await _proveedoresSumPage.FiltrarPorCodigoNombreProveedorAsync(nombreOriginal);
+
+        await _proveedoresSumPage.EditarProveedorAsync(nombreOriginal, nombreNoGuardado);
+
+        await _proveedoresSumPage.CancelarEdicionProveedorAsync();
+
+        bool existeNuevo = await _proveedoresSumPage.VerificarProveedorCreadaAsync(nombreNoGuardado);
+        Assert.That(existeNuevo, Is.False, "El nombre nuevo no debería existir porque se canceló.");
+
+        bool existeOriginal = await _proveedoresSumPage.VerificarProveedorCreadaAsync(nombreOriginal);
+        Assert.That(existeOriginal, Is.True, "El nombre original debería persistir.");
     }
 
     [Test]
@@ -142,5 +176,18 @@ public class ProvedoresSumTest : BaseTest
         await _proveedoresSumPage.LimpiarFiltrosAsync();
         await _proveedoresSumPage.FiltrarPorCodigoNombreProveedorAsync(nombreProveedor);
         Assert.That(await _proveedoresSumPage.VerificarProveedorCreadaAsync(nombreProveedor), Is.False);
+    }
+
+    [Test]
+    public async Task EliminarProveedor_ErrorPorTenerOrdenesAsociadas()
+    {
+        await _proveedoresSumPage.IrAProveedoresSum();
+
+        string nombreProveedor = "pepe";
+        await _proveedoresSumPage.FiltrarPorCodigoNombreProveedorAsync(nombreProveedor);
+        await _proveedoresSumPage.EliminarProveedorAsync(nombreProveedor);
+
+        var mensaje = await _proveedoresSumPage.ObtenerMensajeToastAsync();
+        Assert.That(mensaje, Does.Contain("No se puede eliminar el proveedor porque tiene órdenes de entrega asociadas."));
     }
 }

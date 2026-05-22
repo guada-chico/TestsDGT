@@ -22,7 +22,7 @@ public class ProveedoresSumPage
     private ILocator ObservacionesProveedor => _page.Locator("#observaciones");
 
     private ILocator BotonGuardarProveedor => _page.GetByRole(AriaRole.Button, new() { Name = "Guardar", Exact = true });
-    private ILocator BotonCancelarProveedor => _page.GetByRole(AriaRole.Button, new() { Name = "Cancelar", Exact = true });
+    private ILocator BotonCancelarEdicionProveedor => _page.GetByRole(AriaRole.Button, new() { Name = "Cancelar", Exact = true });
     private ILocator BotónConfirmarCancelarProveedor => _page.GetByRole(AriaRole.Button, new() { Name = "Salir sin guardar", Exact = true });
     private ILocator ToastMensaje => _page.Locator(".p-toast");
 
@@ -33,15 +33,16 @@ public class ProveedoresSumPage
 
     private ILocator BotonMasOpcionesProveedor => _page.Locator("button").Filter(new() { Has = _page.Locator(".pi-ellipsis-v") }).First;
     private ILocator OpcionEditarProveedor => _page.GetByRole(AriaRole.Menuitem, new() { Name = "Editar", Exact = true });
-    private ILocator BotonEliminarProveedor => _page.GetByRole(AriaRole.Button, new() { Name = "Eliminar", Exact = true }).First;
-    private ILocator BotonConfirmarEliminarProveedor => _page.GetByRole(AriaRole.Button, new() { Name = "Eliminar", Exact = true });
+    private ILocator BotonEliminarProveedor => _page.Locator("button.p-button-danger");
+    private ILocator PopupEliminarProveedor => _page.Locator(".p-dialog-footer");
+    private ILocator BotonConfirmarEliminarProveedor => _page.Locator("button.p-confirmdialog-accept-button");
 
     public ProveedoresSumPage(IPage page)
     {
         _page = page;
     }
 
-    public async Task CrearFormularioNuevoProveedorAsync(string nombre, string razonSocial, string cifNif, string web, string direccion, string telefono, string contacto, string correoElectronico, string estado, string observaciones)
+    public async Task CrearNuevoProveedorAsync(string nombre, string razonSocial, string cifNif, string web, string direccion, string telefono, string contacto, string correoElectronico, string estado, string observaciones)
     {
         await BotonNuevoProveedor.ClickAsync();
 
@@ -75,16 +76,14 @@ public class ProveedoresSumPage
         await ObservacionesProveedor.FillAsync(observaciones);
     }
 
-    public async Task CrearNuevoProveedorAsync(string nombre, string razonSocial, string cifNif, string web, string direccion, string telefono, string contacto, string correoElectronico, string estado, string observaciones)
+    public async Task GuadarNuevoProveedorAsync()
     {
-        await CrearFormularioNuevoProveedorAsync(nombre, razonSocial, cifNif, web, direccion, telefono, contacto, correoElectronico, estado, observaciones);
         await BotonGuardarProveedor.ClickAsync();
     }
 
-    public async Task CancelarCreacionProveedorAsync(string nombre, string razonSocial, string cifNif, string web, string direccion, string telefono, string contacto, string correoElectronico, string estado, string observaciones)
+    public async Task CancelarCreacionProveedorAsync()
     {
-        await CrearFormularioNuevoProveedorAsync(nombre, razonSocial, cifNif, web, direccion, telefono, contacto, correoElectronico, estado, observaciones);
-        await BotonCancelarProveedor.ClickAsync();
+        await BotonCancelarEdicionProveedor.ClickAsync();
         await BotónConfirmarCancelarProveedor.ClickAsync();
     }
 
@@ -103,16 +102,7 @@ public class ProveedoresSumPage
 
     public async Task<bool> VerificarProveedorCreadaAsync(string nombreProveedor)
     {
-        try
-        {
-            var celdaProveedor = _page.Locator("td").GetByText(nombreProveedor, new() { Exact = true }).First;
-            await Assertions.Expect(celdaProveedor).ToBeVisibleAsync(new() { Timeout = 15000 });
-            return true;
-        }
-        catch (Exception)
-        {
-            return false;
-        }
+        return await _page.Locator("td").GetByText(nombreProveedor, new() { Exact = true }).IsVisibleAsync();
     }
 
     public async Task<bool> VerificarTextoEnTablaAsync(string textoBuscar)
@@ -138,6 +128,7 @@ public class ProveedoresSumPage
     {
         await BotonLimpiarFiltros.ClickAsync();
         await _page.WaitForLoadStateAsync(LoadState.NetworkIdle);
+        await _page.WaitForTimeoutAsync(500);
     }
 
     public async Task EditarProveedorAsync(string nombreProveedor, string nuevoNombre)
@@ -151,8 +142,19 @@ public class ProveedoresSumPage
         await InputNombreProveedor.ClickAsync();
         await InputNombreProveedor.ClearAsync();
         await InputNombreProveedor.FillAsync(nuevoNombre);
+    }
 
+    public async Task GuardarCambiosProveedorsync()
+    {
         await BotonGuardarProveedor.ClickAsync();
+    }
+
+    public async Task CancelarEdicionProveedorAsync()
+    {
+        await BotonCancelarEdicionProveedor.ClickAsync();
+        await BotónConfirmarCancelarProveedor.ClickAsync();
+
+        await BotonNuevoProveedor.WaitForAsync(new() { State = WaitForSelectorState.Visible });
     }
 
     public async Task EliminarProveedorAsync(string nombreProveedor)
@@ -163,7 +165,11 @@ public class ProveedoresSumPage
 
         await BotonEliminarProveedor.ClickAsync();
 
+        await BotonConfirmarEliminarProveedor.WaitForAsync(new() { State = WaitForSelectorState.Visible, Timeout = 10000 });
+
         await BotonConfirmarEliminarProveedor.ClickAsync();
+
+        await PopupEliminarProveedor.WaitForAsync(new() { State = WaitForSelectorState.Hidden, Timeout = 5000 });
     }
 
     public async Task IrAProveedoresSum()
