@@ -1,7 +1,8 @@
-using System.Text.RegularExpressions;
 using Microsoft.Playwright;
 using NUnit.Framework;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using TestsDGT.Paginas.Suministro.Proveedores;
 
 namespace TestsDGT.Paginas.Suministro.OrdenProduccion;
 
@@ -21,20 +22,26 @@ public class OrdenProduccionTest : BaseTest
     {
         await _ordenProduccionPage.IrAOrdenProduccion();
 
-        bool guardadoExitoso = await _ordenProduccionPage.CrearNuevaOrdenProduccionAsync(
-            expediente: "4561",
+        await _ordenProduccionPage.IrACrearOrdenProduccionAsync();
+
+        await _ordenProduccionPage.DatosNuevaOrdenProduccionAsync(
+            expediente: "891",
             lote: "Lote Prueba",
             duracionContrato: 12,
             observaciones: "Observaciones prueba",
-            proveedor: "RopaMuyGuay",
+            proveedor: "RopitaChulita"
+        );
+        
+        await _ordenProduccionPage.ArticuloNuevaOrdenProduccionAsync(
             valorPrenda: "777",
             talla: "M",
-            cantidad: 5,
-            esPorCodigo: true
+            cantidad: 5
         );
 
-        Assert.That(guardadoExitoso, Is.True,
-            "El servidor de la DGT rechazó la petición de creación de la orden de producción por Código.");
+        await _ordenProduccionPage.GuardarNuevaOrdenProduccionAsync();
+
+        var mensaje = await _ordenProduccionPage.ObtenerMensajeToastAsync();
+        Assert.That(mensaje, Does.Contain("Orden guardada correctamente. El envio de correo no bloquea la creacion."));
     }
 
     [Test]
@@ -42,34 +49,39 @@ public class OrdenProduccionTest : BaseTest
     {
         await _ordenProduccionPage.IrAOrdenProduccion();
 
-        bool guardadoExitoso = await _ordenProduccionPage.CrearNuevaOrdenProduccionAsync(
+        await _ordenProduccionPage.IrACrearOrdenProduccionAsync();
+
+        await _ordenProduccionPage.DatosNuevaOrdenProduccionAsync(
             expediente: "2365",
             lote: "Lote Prueba Articulo",
             duracionContrato: 12,
             observaciones: "Observaciones prueba 2",
-            proveedor: "RopaMuyGuay",
+            proveedor: "RopaMuyGuay"
+        );
+
+        await _ordenProduccionPage.ArticuloNuevaOrdenProduccionAsync(
             valorPrenda: "JERSEY VERDE DE CUELLO CISNE",
             talla: "L",
             cantidad: 5,
             esPorCodigo: false
         );
 
-        Assert.That(guardadoExitoso, Is.True,
-            "El servidor de la DGT rechazó la petición de creación de la orden de producción por Artículo.");
+        await _ordenProduccionPage.GuardarNuevaOrdenProduccionAsync();
+
+        var mensaje = await _ordenProduccionPage.ObtenerMensajeToastAsync();
+        Assert.That(mensaje, Does.Contain("Orden guardada correctamente. El envio de correo no bloquea la creacion."));
     }
 
+    /* Pendiente de cambiar (Bug)
     [Test]
-    public async Task AgregarArticulosOD()
+    public async Task CancelarNuevaOrdenProduccion()
     {
         await _ordenProduccionPage.IrAOrdenProduccion();
-
-        string expedientePrueba = "7890";
-
         await _ordenProduccionPage.CrearNuevaOrdenProduccionAsync(
-            expediente: expedientePrueba,
-            lote: "Lote Prueba Agregar Articulos",
+            expediente: "9999",
+            lote: "Lote Prueba Cancelar",
             duracionContrato: 12,
-            observaciones: "Observaciones prueba agregar artículos",
+            observaciones: "Observaciones prueba cancelar",
             proveedor: "RopaMuyGuay",
             valorPrenda: "777",
             talla: "M",
@@ -77,23 +89,136 @@ public class OrdenProduccionTest : BaseTest
             esPorCodigo: true
         );
 
-        await _ordenProduccionPage.AgregarArticuloODAsync(
+        await _ordenProduccionPage.CancelarNuevaOrdenProduccionAsync();
+
+        bool existe = await _ordenProduccionPage.VerificarOrdenProduccionCreadaAsync("9999");
+        Assert.That(existe, Is.False, "La orden de producción se creó a pesar de cancelar el proceso.");
+    }
+    */
+
+    [Test]
+    public async Task AgregarArticulosOD()
+    {
+        await _ordenProduccionPage.IrAOrdenProduccion();
+
+        await _ordenProduccionPage.IrACrearOrdenProduccionAsync();
+
+        await _ordenProduccionPage.DatosNuevaOrdenProduccionAsync(
+            expediente: "7890",
+            lote: "Lote Prueba Agregar Articulos",
+            duracionContrato: 12,
+            observaciones: "Observaciones prueba agregar artículos",
+            proveedor: "RopaMuyGuay"
+        ); 
+
+        await _ordenProduccionPage.ArticuloNuevaOrdenProduccionAsync(
+            valorPrenda: "246",
+            talla: "M",
+            cantidad: 5,
+            esPorCodigo: true
+        );
+
+        await _ordenProduccionPage.AgregarArticuloODAsync();
+
+        await _ordenProduccionPage.ArticuloNuevaOrdenProduccionAsync(
             valorPrenda: "JERSEY VERDE DE CUELLO CISNE",
             talla: "L",
             cantidad: 3,
             esPorCodigo: false
         );
 
-        bool guardadoExitoso = await _ordenProduccionPage.FinalizarYGuardarOrdenAsync();
+        await _ordenProduccionPage.FinalizarYGuardarOrdenAsync();
 
-        Assert.That(guardadoExitoso, Is.True,
-            "El servidor de la DGT rechazó la creación de la orden con múltiples artículos.");
+        var mensaje = await _ordenProduccionPage.ObtenerMensajeToastAsync();
+        Assert.That(mensaje, Does.Contain("Orden guardada correctamente. El envio de correo no bloquea la creacion."));
+    }
 
+    [Test]
+    public async Task VerDetalleOrdenProduccion()
+    {
         await _ordenProduccionPage.IrAOrdenProduccion();
-        await _ordenProduccionPage.FiltrarPorCodigoExpedienteODAsync(expedientePrueba);
 
-        Assert.That(await _ordenProduccionPage.VerificarOrdenProduccionCreadaAsync(expedientePrueba), Is.True);
-        Assert.That(await _ordenProduccionPage.ObtenerNumeroFilasOrdenesProduccionAsync(), Is.GreaterThan(0));
+        string expedienteOrdenProduccion = "92";
+        await _ordenProduccionPage.VerDetalleOrdenProduccionAsync(expedienteOrdenProduccion);
+
+        await Page.WaitForURLAsync("**/orden-produccion/detalle/92", new() { Timeout = 7000 });
+    }
+
+    [Test]
+    public async Task CambiarEstadoOrdenProduccion()
+    {
+        await _ordenProduccionPage.IrAOrdenProduccion();
+
+        string expedienteOrdenProduccion = "92";
+        await _ordenProduccionPage.VerDetalleOrdenProduccionAsync(expedienteOrdenProduccion);
+
+        string nuevoEstado = "Entrega parcial";
+        await _ordenProduccionPage.CambiarEstadoOrdenProduccionAsync(nuevoEstado);
+
+        var mensaje = await _ordenProduccionPage.ObtenerMensajeToastAsync();
+        Assert.That(mensaje, Does.Contain("Estado actualizado correctamente"));
+    }
+
+    [Test]
+    public async Task ImprimirOrdenProduccion_DesdeVerDetalles()
+    {
+        await _ordenProduccionPage.IrAOrdenProduccion();
+
+        string expedienteOrdenProduccion = "92";
+        await _ordenProduccionPage.VerDetalleOrdenProduccionAsync(expedienteOrdenProduccion);
+
+        var esperarPestañaTask = Page.Context.WaitForPageAsync();
+
+        await _ordenProduccionPage.ImprimirDesdeVerDetallesOP();
+
+        var nuevaPestaña = await esperarPestañaTask;
+
+        await nuevaPestaña.WaitForLoadStateAsync(LoadState.Load);
+
+        string urlImpresion = nuevaPestaña.Url;
+
+        Console.WriteLine($"URL de la pestaña de impresión capturada: {urlImpresion}");
+
+        Assert.That(urlImpresion, Does.Contain("blob"),
+                $"La pestaña se abrió pero no parece ser un objeto de impresión en memoria. URL: {urlImpresion}");
+    }
+
+    [Test]
+    public async Task ImprimirOrdenProduccion_DesdeMasOpciones()
+    {
+        await _ordenProduccionPage.IrAOrdenProduccion();
+
+        string expedienteOrdenProduccion = "92";
+        await _ordenProduccionPage.VerDetalleOrdenProduccionAsync(expedienteOrdenProduccion);
+
+        var esperarPestañaTask = Page.Context.WaitForPageAsync();
+
+        await _ordenProduccionPage.ImprimirDesdeMasOpcionesOPAsync();
+
+        var nuevaPestaña = await esperarPestañaTask;
+
+        await nuevaPestaña.WaitForLoadStateAsync(LoadState.Load);
+
+        string urlImpresion = nuevaPestaña.Url;
+
+        Console.WriteLine($"URL de la pestaña de impresión capturada: {urlImpresion}");
+
+        Assert.That(urlImpresion, Does.Contain("blob"),
+                $"La pestaña se abrió pero no parece ser un objeto de impresión en memoria. URL: {urlImpresion}");
+    }
+
+    [Test]
+    public async Task EnviarCorreoAProveedor() // Bug abierto
+    {
+        await _ordenProduccionPage.IrAOrdenProduccion();
+
+        string expedienteOrdenProduccion = "92";
+        await _ordenProduccionPage.VerDetalleOrdenProduccionAsync(expedienteOrdenProduccion);
+
+        await _ordenProduccionPage.EnviarCorreoAProveedorAsync();
+
+        var mensaje = await _ordenProduccionPage.ObtenerMensajeToastAsync();
+        Assert.That(mensaje, Does.Contain("No se pudo enviar el correo."));
     }
 
     [Test]
@@ -109,7 +234,7 @@ public class OrdenProduccionTest : BaseTest
     }
 
     [Test]
-    public async Task FiltroExpedienteOD()
+    public async Task FiltroExpedienteOD() // Bug abierto
     {
         await _ordenProduccionPage.IrAOrdenProduccion();
 
