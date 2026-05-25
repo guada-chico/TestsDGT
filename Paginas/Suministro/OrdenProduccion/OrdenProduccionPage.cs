@@ -25,7 +25,7 @@ public class OrdenProduccionPage
     private ILocator BotonAgregarArticulo => _page.GetByRole(AriaRole.Button, new() { Name = "Agregar", Exact = true });
     private ILocator BotonEliminarArticulos => _page.Locator("button").Filter(new() { Has = _page.Locator(".pi-trash") });
     private ILocator BotonGuardarOrden => _page.GetByRole(AriaRole.Button, new() { Name = "Guardar", Exact = true });
-    private ILocator BotonCancelarOrden => _page.Locator("button").Filter(new() { Has = _page.Locator(".p-button-secondary") });
+    private ILocator BotonCancelarOrden => _page.GetByRole(AriaRole.Button, new() { Name = "Cancelar", Exact = true });
 
     private ILocator BotonConfirmarEnvioOP => _page.Locator("button.p-confirmdialog-accept-button");
     private ILocator BotonCancelarEnvioOP => _page.Locator("button.p-confirmdialog-reject-button");
@@ -123,8 +123,6 @@ public class OrdenProduccionPage
     public async Task CancelarNuevaOrdenProduccionAsync()
     {
         await BotonCancelarOrden.ClickAsync();
-        var botonSalir = _page.GetByRole(AriaRole.Button, new() { Name = "Salir sin guardar" });
-        if (await botonSalir.IsVisibleAsync()) await botonSalir.ClickAsync();
     }
 
     public async Task EliminarPrimerArticuloDeTablaAsync()

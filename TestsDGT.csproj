@@ -51,7 +51,6 @@
     <Folder Include="Paginas\Peticiones\GestionIncidencias\" />
     <Folder Include="Paginas\Peticiones\GestionDevoluciones\" />
     <Folder Include="Paginas\Peticiones\ResolucionPeticiones\" />
-    <Folder Include="Paginas\Suministro\Conformidad\" />
     <Folder Include="Paginas\Usuarios\PerfilUsu\" />
   </ItemGroup>
 

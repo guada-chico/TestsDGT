@@ -72,17 +72,21 @@ public class OrdenProduccionTest : BaseTest
         Assert.That(mensaje, Does.Contain("Orden guardada correctamente. El envio de correo no bloquea la creacion."));
     }
 
-    /* Pendiente de cambiar (Bug)
     [Test]
     public async Task CancelarNuevaOrdenProduccion()
     {
         await _ordenProduccionPage.IrAOrdenProduccion();
-        await _ordenProduccionPage.CrearNuevaOrdenProduccionAsync(
+
+        await _ordenProduccionPage.IrACrearOrdenProduccionAsync();
+
+        await _ordenProduccionPage.DatosNuevaOrdenProduccionAsync(
             expediente: "9999",
             lote: "Lote Prueba Cancelar",
             duracionContrato: 12,
             observaciones: "Observaciones prueba cancelar",
-            proveedor: "RopaMuyGuay",
+            proveedor: "RopaMuyGuay"
+        );
+        await _ordenProduccionPage.ArticuloNuevaOrdenProduccionAsync(
             valorPrenda: "777",
             talla: "M",
             cantidad: 5,
@@ -94,7 +98,7 @@ public class OrdenProduccionTest : BaseTest
         bool existe = await _ordenProduccionPage.VerificarOrdenProduccionCreadaAsync("9999");
         Assert.That(existe, Is.False, "La orden de producción se creó a pesar de cancelar el proceso.");
     }
-    */
+    
 
     [Test]
     public async Task AgregarArticulosOD()
@@ -207,7 +211,7 @@ public class OrdenProduccionTest : BaseTest
     }
 
     [Test]
-    public async Task EnviarCorreoAProveedor() // Bug abierto
+    public async Task EnviarCorreoAProveedor()
     {
         await _ordenProduccionPage.IrAOrdenProduccion();
 
@@ -217,7 +221,7 @@ public class OrdenProduccionTest : BaseTest
         await _ordenProduccionPage.EnviarCorreoAProveedorAsync();
 
         var mensaje = await _ordenProduccionPage.ObtenerMensajeToastAsync();
-        Assert.That(mensaje, Does.Contain("No se pudo enviar el correo."));
+        Assert.That(mensaje, Does.Contain("Correo enviado correctamente al proveedor"));
     }
 
     [Test]
