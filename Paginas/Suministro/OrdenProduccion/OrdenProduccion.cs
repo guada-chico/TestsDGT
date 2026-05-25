@@ -189,11 +189,10 @@ public class OrdenProduccionTest : BaseTest
         await _ordenProduccionPage.IrAOrdenProduccion();
 
         string expedienteOrdenProduccion = "92";
-        await _ordenProduccionPage.VerDetalleOrdenProduccionAsync(expedienteOrdenProduccion);
+
+        await _ordenProduccionPage.ImprimirDesdeMasOpcionesOPAsync(expedienteOrdenProduccion);
 
         var esperarPestañaTask = Page.Context.WaitForPageAsync();
-
-        await _ordenProduccionPage.ImprimirDesdeMasOpcionesOPAsync();
 
         var nuevaPestaña = await esperarPestañaTask;
 
@@ -250,7 +249,7 @@ public class OrdenProduccionTest : BaseTest
     {
         await _ordenProduccionPage.IrAOrdenProduccion();
 
-        await _ordenProduccionPage.FiltrarPorProveedorODAsync("Proveedor Siete");
+        await _ordenProduccionPage.FiltrarPorProveedorOPAsync("Proveedor Siete");
 
         Assert.That(await _ordenProduccionPage.ObtenerNumeroFilasOrdenesProduccionAsync(), Is.GreaterThan(0));
         Assert.That(await _ordenProduccionPage.VerificarTextoEnTablaAsync("Proveedor Siete"), Is.True);

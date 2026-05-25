@@ -40,7 +40,9 @@ public class OrdenProduccionPage
     private ILocator FilasTablaOrdenProduccion => _page.Locator("tbody tr");
 
     private ILocator BotonMasOpciones => _page.Locator("button").Filter(new() { Has = _page.Locator(".pi-ellipsis-v") });
+    private ILocator BotonImprimirDesdeMasOpciones => _page.GetByRole(AriaRole.Menuitem, new() { Name = "Imprimir" });
     private ILocator OpcionVerDetalleOrdenProduccion => _page.GetByRole(AriaRole.Menuitem, new() { Name = "Ver detalle" });
+
     private ILocator ComboCambiarEstadoOrdenProduccion => _page.Locator("p-dropdown[placeholder='Seleccione un estado']");
     private ILocator BotonActualizarEstado => _page.GetByRole(AriaRole.Button, new() { Name = "Actualizar" });
     private ILocator BotonImprimirOrdenProduccion => _page.GetByRole(AriaRole.Button, new() { Name = "Imprimir" });
@@ -165,7 +167,7 @@ public class OrdenProduccionPage
 
         await filaOrdenProduccion.Locator(BotonMasOpciones).ClickAsync();
 
-        await OpcionVerDetalleOrdenProduccion.ClickAsync();
+        await BotonImprimirDesdeMasOpciones.ClickAsync();
     }
 
     public async Task EnviarCorreoAProveedorAsync()
