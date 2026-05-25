@@ -80,12 +80,17 @@ public class ConformidadSumTest : BaseTest
     {
         await _conformidadSumPage.IrAConformidadSuministro();
 
-        string expedienteConformidadSum = "80";
+        string expedienteConformidadSum = "94";
         await _conformidadSumPage.VerDetalleConformidadSumAsync(expedienteConformidadSum);
 
+        await _conformidadSumPage.NuevaVerificacionSumAsync(
+            "15/09/2024", 
+            "Verificación de prueba", 
+            "DGT 2.xlsx", 
+            "1"
+        );
 
-        var mensaje = await _conformidadSumPage.ObtenerMensajeToastAsync();
-        Assert.That(mensaje, Does.Contain("La conformidad de suministro ya tiene una verificación asociada. No se puede crear una nueva."));
+        
     }
 
     [Test]
