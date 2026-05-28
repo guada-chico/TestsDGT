@@ -58,8 +58,7 @@ public class BaseTest
             }
             catch (Exception)
             {
-                // Si el test falló a mitad y no estamos en la pantalla donde se puede cerrar sesión,
-                // el catch captura el error silenciosamente para que NUnit no se queje en el reporte.
+
             }
         }
 

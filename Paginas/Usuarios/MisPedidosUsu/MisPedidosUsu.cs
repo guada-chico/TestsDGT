@@ -18,7 +18,7 @@ public class MisPedidosUsuTest : BaseTest
     [Test]
     public async Task PedidoOrdinarioExito()
     {
-        await _pedidosPage.AñadirProductoAlCarritoAsync("777", "M", "2");
+        await _pedidosPage.AgregarProductoAlCarritoAsync("777", "M", "2");
         await _pedidosPage.TramitarPedidoOrdinarioAsync();
 
         var mensaje = await _pedidosPage.ObtenerMensajeToastAsync();
@@ -28,7 +28,7 @@ public class MisPedidosUsuTest : BaseTest
     [Test]
     public async Task PedidoUrgenteExito()
     {
-        await _pedidosPage.AñadirProductoAlCarritoAsync("777", "M", "2");
+        await _pedidosPage.AgregarProductoAlCarritoAsync("777", "M", "2");
 
         await _pedidosPage.TramitarPedidoUrgenteAsync(
             motivo: "Accidente",
@@ -43,7 +43,7 @@ public class MisPedidosUsuTest : BaseTest
     [Test]
     public async Task BorrarArticuloPedido()
     {
-        await _pedidosPage.AñadirProductoAlCarritoAsync("777", "M", "2");
+        await _pedidosPage.AgregarProductoAlCarritoAsync("777", "M", "2");
         await _pedidosPage.BorrarArticuloDeLaCestaAsync("Zapatillas Nike 3.0");
 
         var mensaje = await _pedidosPage.ObtenerMensajeToastAsync();
@@ -53,7 +53,7 @@ public class MisPedidosUsuTest : BaseTest
     [Test]
     public async Task PedidoOtroUsuario()
     {
-        await _pedidosPage.AñadirProductoAlCarritoAsync("777", "M", "2");
+        await _pedidosPage.AgregarProductoAlCarritoAsync("777", "M", "2");
         await _pedidosPage.TramitarPedidoParaOtroUsuarioAsync("julia");
 
         var mensaje = await _pedidosPage.ObtenerMensajeToastAsync();

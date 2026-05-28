@@ -2,9 +2,9 @@ using Microsoft.Playwright;
 using NUnit.Framework;
 using System.Threading.Tasks;
 
-namespace TestsDGT.Paginas.Usuarios.Catalogo;
+namespace TestsDGT.Paginas.Usuarios.MiCesta;
 
-public class CatalogoPage
+public class MiCestaPage
 {
     private readonly IPage _page;
 
@@ -13,12 +13,9 @@ public class CatalogoPage
     private ILocator BotonFiltrar => _page.Locator(".pi-filter");
     private ILocator BotonLimpiarFiltros => _page.Locator(".pi-times");
 
-    private ILocator BotonIrAMisPedidos => _page.GetByRole(AriaRole.Button, new() { Name = "Mis pedidos" });
-
-    private ILocator ComboTalla => _page.Locator("#talla");
+    private ILocator InputTalla => _page.Locator("#talla");
     private ILocator InputCantidad => _page.Locator("#cantidad");
     private ILocator BotonAgregarCesta => _page.GetByRole(AriaRole.Button, new() { Name = "Añadir a la cesta" });
-    private ILocator BotonVolverCatalogo => _page.GetByRole(AriaRole.Button, new() { Name = "Volver al catálogo" });
 
     private ILocator InputFiltroLote => _page.GetByRole(AriaRole.Textbox, new() { Name = "Buscar por código o nombre" });
     private ILocator BotonPaginaLotesDisponibles => _page.GetByRole(AriaRole.Button, new() { Name = "Lotes disponibles" });
@@ -28,7 +25,7 @@ public class CatalogoPage
     private ILocator CeldaTabla (string texto) => _page.Locator("td").Filter(new() { HasText = texto });
     private ILocator ToastMensaje => _page.Locator(".p-toast");
 
-    public CatalogoPage(IPage page)
+    public MiCestaPage(IPage page)
     {
         _page = page;
     }
@@ -56,41 +53,27 @@ public class CatalogoPage
         await _page.WaitForLoadStateAsync(LoadState.NetworkIdle);
     }
 
-    public async Task SeleccionarProductoCatalogoAsync(string codigoProd)
+    public async Task AgregarProductoAlCarritoAsync(string codigoProd, string talla, string cantidad)
     {
+        await FiltrarPorCodigoAsync(codigoProd);
+
         var filaProducto = _page.GetByRole(AriaRole.Row).Filter(new() { HasText = codigoProd });
         await filaProducto.WaitForAsync();
         await filaProducto.Locator("button.p-button-icon-only").ClickAsync();
 
-        await _page.WaitForLoadStateAsync(LoadState.NetworkIdle);
-    }
+        await InputTalla.Locator(".p-select-dropdown, .p-dropdown-trigger").ClickAsync();
 
-    public async Task AgregarDatosProductoAsync(string talla, string cantidad)
-    {
-        await ComboTalla.ClickAsync();
-        await _page.GetByRole(AriaRole.Option, new() { Name = talla }).ClickAsync();
+        var opcionTalla = _page.Locator(".p-dropdown-item:visible, .p-select-option:visible, p-overlay .p-component :text-is('" + talla + "')").First;
+        await opcionTalla.WaitForAsync(new() { State = WaitForSelectorState.Visible, Timeout = 4000 });
+        await opcionTalla.ClickAsync();
 
-        await InputCantidad.ClickAsync();
-        await _page.GetByRole(AriaRole.Option, new() { Name = cantidad }).ClickAsync();
+        await InputCantidad.Locator(".p-select-dropdown, .p-dropdown-trigger").ClickAsync();
 
-        await _page.WaitForLoadStateAsync(LoadState.NetworkIdle);
-    }
+        var opcionCantidad = _page.Locator(".p-dropdown-item:visible, .p-select-option:visible, p-overlay .p-component :text-is('" + cantidad + "')").First;
+        await opcionCantidad.WaitForAsync(new() { State = WaitForSelectorState.Visible, Timeout = 4000 });
+        await opcionCantidad.ClickAsync();
 
-    public async Task AgregarACestaAsync()
-    {
         await BotonAgregarCesta.ClickAsync();
-        await _page.WaitForLoadStateAsync(LoadState.NetworkIdle);
-    }
-
-    public async Task VolverAlCatalogoAsync()
-    {
-        await BotonVolverCatalogo.ClickAsync();
-        await _page.WaitForLoadStateAsync(LoadState.NetworkIdle);
-    }
-
-    public async Task IrAMisPedidosAsync()
-    {
-        await BotonIrAMisPedidos.ClickAsync();
         await _page.WaitForLoadStateAsync(LoadState.NetworkIdle);
     }
 

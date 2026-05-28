@@ -32,14 +32,6 @@ public class LotesUsuPage
         _page = page;
     }
 
-    public async Task AgregarLoteAlCarritoAsync(string codigoLote)
-    {
-        var filaLote = _page.GetByRole(AriaRole.Row).Filter(new() { HasText = codigoLote }).First;
-        await filaLote.WaitForAsync(new() { State = WaitForSelectorState.Visible });
-
-        await filaLote.Locator(BotonAgregarLote).ClickAsync();
-    }
-
     public async Task DatosLoteCestaAsync(string talla, string instrucciones)
     {
         await IconoCesta.ClickAsync();
@@ -78,7 +70,7 @@ public class LotesUsuPage
         return await ToastMensaje.InnerTextAsync();
     }
 
-    public async Task FiltrarPorCodigoONombreAsync(string codigoNombre)
+    public async Task FiltrarPorLoteAsync(string codigoNombre)
     {
         await InputFiltroCodigoONombre.FillAsync(codigoNombre);
         await BotonFiltrar.ClickAsync();

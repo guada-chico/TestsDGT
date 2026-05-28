@@ -6,28 +6,24 @@ public class MisPedidosPage
 {
     private readonly IPage _page;
 
-    // Localizadores Básicos
     private ILocator InputTalla => _page.Locator("#talla");
     private ILocator InputCantidad => _page.Locator("#cantidad");
-    private ILocator BotonAnadirCesta => _page.GetByRole(AriaRole.Button, new() { Name = "Añadir a la cesta" });
+    private ILocator BotonAgregarCesta => _page.GetByRole(AriaRole.Button, new() { Name = "Añadir a la cesta" });
     private ILocator BotonCloseModal => _page.GetByRole(AriaRole.Button, new() { Name = "Close" });
     private ILocator IconoCesta => _page.Locator(".cesta");
     private ILocator CheckConfirmarTalla => _page.GetByRole(AriaRole.Checkbox, new() { Name = "Confirmar talla" });
     private ILocator BotonTramitar => _page.GetByRole(AriaRole.Button, new() { Name = "Tramitar" });
     private ILocator ToastMensaje => _page.Locator(".p-toast");
 
-    // Localizadores de Pedido Urgente
     private ILocator RadioUrgente => _page.Locator("input[value='Urgente']");
     private ILocator ComboMotivo => _page.GetByRole(AriaRole.Combobox, new() { Name = "Seleccionar motivo" });
     private ILocator InputInstrucciones => _page.GetByRole(AriaRole.Textbox, new() { Name = "Añade instrucciones" });
     private ILocator InputArchivo => _page.Locator("input[type='file']");
 
-    // Localizadores de Otro Usuario
     private ILocator RadioOtroUsuario => _page.GetByRole(AriaRole.Radio, new() { Name = "Otro usuario" });
     private ILocator ComboSeleccionarUsuario => _page.GetByRole(AriaRole.Combobox, new() { Name = "-- Selecciona un usuario --" });
     private ILocator BuscadorUsuario => _page.GetByRole(AriaRole.Searchbox, new() { Name = "Buscar usuario..." });
 
-    // Localizadores filtros
     private ILocator InputFiltroNombre => _page.GetByPlaceholder("Nombre del artículo");
     private ILocator InputFiltroCodigo => _page.GetByPlaceholder("Código");
     private ILocator EstadoPedido => _page.Locator("p-dropdown").GetByRole(AriaRole.Combobox);
@@ -35,7 +31,6 @@ public class MisPedidosPage
     private ILocator FechaHasta => _page.Locator("#endDate input[placeholder='dd/mm/aaaa']");
     private ILocator BotonFiltrar => _page.Locator("button").Filter(new() { Has = _page.Locator(".pi-filter") });
 
-    // Elementos de la tabla
     private ILocator CabecerasTabla => _page.Locator("th");
     private ILocator FilasTabla => _page.Locator("tbody tr");
     private ILocator CeldaTexto(string texto) => _page.Locator("td").Filter(new() { HasText = texto });
@@ -45,7 +40,7 @@ public class MisPedidosPage
         _page = page;
     }
 
-    public async Task AñadirProductoAlCarritoAsync(string codigoProd, string talla, string cantidad)
+    public async Task AgregarProductoAlCarritoAsync(string codigoProd, string talla, string cantidad)
     {
         var filaProducto = _page.GetByRole(AriaRole.Row).Filter(new() { HasText = codigoProd });
         await filaProducto.WaitForAsync();
@@ -57,7 +52,7 @@ public class MisPedidosPage
         await InputCantidad.ClickAsync();
         await _page.GetByRole(AriaRole.Option, new() { Name = cantidad }).ClickAsync();
 
-        await BotonAnadirCesta.ClickAsync();
+        await BotonAgregarCesta.ClickAsync();
         await BotonCloseModal.ClickAsync();
         await IconoCesta.ClickAsync();
     }
@@ -103,7 +98,6 @@ public class MisPedidosPage
 
     public async Task IrAMisPedidosAsync()
     {
-        // Forzamos la navegación directa que es mucho más rápida y estable
         await _page.GotoAsync("http://192.168.200.51:7001/dgt-front/#/orders-list");
         await _page.WaitForURLAsync("**/orders-list");
     }
@@ -167,7 +161,6 @@ public class MisPedidosPage
 
         if (indiceColumna == -1) return new List<string>();
 
-        // Esperamos a que la primera fila cargue antes de leer los datos
         await _page.Locator("tbody tr td").First.WaitForAsync(new() { State = WaitForSelectorState.Visible });
 
         return (await _page.Locator($"tbody tr td:nth-child({indiceColumna + 1})").AllInnerTextsAsync()).ToList();
