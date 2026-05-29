@@ -8,18 +8,20 @@ public class MiCestaPage
 {
     private readonly IPage _page;
 
-    private ILocator InputBuscarCodigo => _page.GetByPlaceholder("Buscar por código");
-    private ILocator InputBuscarNombre => _page.GetByPlaceholder("Buscar por nombre");
-    private ILocator BotonFiltrar => _page.Locator(".pi-filter");
-    private ILocator BotonLimpiarFiltros => _page.Locator(".pi-times");
+    private ILocator CheckConfirmarTalla => _page.GetByRole(AriaRole.Checkbox, new() { Name = "Confirmar talla" });
+    private ILocator BotonTramitar => _page.GetByRole(AriaRole.Button, new() { Name = "Tramitar" });
 
-    private ILocator InputTalla => _page.Locator("#talla");
-    private ILocator InputCantidad => _page.Locator("#cantidad");
-    private ILocator BotonAgregarCesta => _page.GetByRole(AriaRole.Button, new() { Name = "Añadir a la cesta" });
+    private ILocator BotonCatalogo => _page.GetByRole(AriaRole.Button, new() { Name = "Catálogo" });
 
-    private ILocator InputFiltroLote => _page.GetByRole(AriaRole.Textbox, new() { Name = "Buscar por código o nombre" });
-    private ILocator BotonPaginaLotesDisponibles => _page.GetByRole(AriaRole.Button, new() { Name = "Lotes disponibles" });
-    private ILocator BotonAgregarLote => _page.GetByRole(AriaRole.Button, new() { Name = "Añadir" });
+    private ILocator RadioUrgente => _page.Locator("input[value='Urgente']");
+    private ILocator ComboMotivo => _page.GetByRole(AriaRole.Combobox, new() { Name = "Seleccionar motivo" });
+    private ILocator InputInstrucciones => _page.GetByRole(AriaRole.Textbox, new() { Name = "Añade instrucciones" });
+    private ILocator InputArchivo => _page.Locator("input[type='file']");
+
+    private ILocator RadioOtroUsuario => _page.GetByRole(AriaRole.Radio, new() { Name = "Otro usuario" });
+    private ILocator ComboSeleccionarUsuario => _page.GetByRole(AriaRole.Combobox, new() { Name = "-- Selecciona un usuario --" });
+    private ILocator BuscadorUsuario => _page.GetByRole(AriaRole.Searchbox, new() { Name = "Buscar usuario..." });
+
 
     private ILocator FilasTabla => _page.Locator("tbody tr");
     private ILocator CeldaTabla (string texto) => _page.Locator("td").Filter(new() { HasText = texto });
@@ -30,65 +32,10 @@ public class MiCestaPage
         _page = page;
     }
 
-    public async Task FiltrarPorCodigoAsync(string codigo)
+    public async Task TramitarPedidoOrdinarioAsync()
     {
-        await InputBuscarCodigo.FillAsync(codigo);
-        await BotonFiltrar.ClickAsync();
-
-        await _page.WaitForLoadStateAsync(LoadState.NetworkIdle);
-    }
-
-    public async Task FiltrarPorNombreAsync(string nombre)
-    {
-        await InputBuscarNombre.FillAsync(nombre);
-        await BotonFiltrar.ClickAsync();
-
-        await _page.WaitForLoadStateAsync(LoadState.NetworkIdle);
-    }
-
-    public async Task LimpiarFiltrosAsync()
-    {
-        await BotonLimpiarFiltros.ClickAsync();
-
-        await _page.WaitForLoadStateAsync(LoadState.NetworkIdle);
-    }
-
-    public async Task AgregarProductoAlCarritoAsync(string codigoProd, string talla, string cantidad)
-    {
-        await FiltrarPorCodigoAsync(codigoProd);
-
-        var filaProducto = _page.GetByRole(AriaRole.Row).Filter(new() { HasText = codigoProd });
-        await filaProducto.WaitForAsync();
-        await filaProducto.Locator("button.p-button-icon-only").ClickAsync();
-
-        await InputTalla.Locator(".p-select-dropdown, .p-dropdown-trigger").ClickAsync();
-
-        var opcionTalla = _page.Locator(".p-dropdown-item:visible, .p-select-option:visible, p-overlay .p-component :text-is('" + talla + "')").First;
-        await opcionTalla.WaitForAsync(new() { State = WaitForSelectorState.Visible, Timeout = 4000 });
-        await opcionTalla.ClickAsync();
-
-        await InputCantidad.Locator(".p-select-dropdown, .p-dropdown-trigger").ClickAsync();
-
-        var opcionCantidad = _page.Locator(".p-dropdown-item:visible, .p-select-option:visible, p-overlay .p-component :text-is('" + cantidad + "')").First;
-        await opcionCantidad.WaitForAsync(new() { State = WaitForSelectorState.Visible, Timeout = 4000 });
-        await opcionCantidad.ClickAsync();
-
-        await BotonAgregarCesta.ClickAsync();
-        await _page.WaitForLoadStateAsync(LoadState.NetworkIdle);
-    }
-
-    public async Task FiltrarPorLoteAsync(string codigoNombre)
-    {
-        await InputFiltroLote.FillAsync(codigoNombre);
-        await BotonFiltrar.ClickAsync();
-    }
-
-    public async Task AgregarLoteAlCarritoAsync(string codigoLote)
-    {
-        var filaLote = _page.GetByRole(AriaRole.Row).Filter(new() { HasText = codigoLote }).First;
-        await filaLote.WaitForAsync(new() { State = WaitForSelectorState.Visible });
-
-        await filaLote.Locator(BotonAgregarLote).ClickAsync();
+        await CheckConfirmarTalla.CheckAsync();
+        await BotonTramitar.ClickAsync();
     }
 
     public async Task<bool> ExisteElementoEnTablaAsync(string texto)
@@ -105,28 +52,29 @@ public class MiCestaPage
     {
         return await FilasTabla.CountAsync();
     }
-
+    /*
     public async Task<string> ObtenerTextoFiltroNombreAsync()
     {
         return await InputBuscarNombre.InputValueAsync();
     }
+    */
     public async Task<string> ObtenerMensajeToastAsync()
     {
         await ToastMensaje.WaitForAsync();
         return await ToastMensaje.InnerTextAsync();
     }
 
-    public async Task IrACatalogoAsync()
+    public async Task IrACestaAsync()
     {
-        await _page.GotoAsync("http://192.168.200.51:7001/dgt-front/#/catalogo");
-        await _page.WaitForURLAsync("**/catalogo");
+        await _page.GotoAsync("http://192.168.200.51:7001/dgt-front/#/app-cart");
+        await _page.WaitForURLAsync("**/app-cart");
 
         await _page.WaitForLoadStateAsync(LoadState.NetworkIdle);
     }
 
-    public async Task IrALotesDisponiblesAsync()
+    public async Task IrACatalogoAsync()
     {
-        await BotonPaginaLotesDisponibles.ClickAsync();
+        await BotonCatalogo.ClickAsync();
         await _page.WaitForLoadStateAsync(LoadState.NetworkIdle);
     }
 }

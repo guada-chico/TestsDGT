@@ -1,6 +1,6 @@
 using Microsoft.Playwright;
 
-namespace TestsDGT.Paginas.Usuarios.LotesUsu;
+namespace TestsDGT.E2E.PedidosUsuE2E;
 
 public class LotesUsuPage
 {

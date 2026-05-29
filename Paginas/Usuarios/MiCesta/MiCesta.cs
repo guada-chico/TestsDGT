@@ -1,5 +1,6 @@
 using Microsoft.Playwright;
 using NUnit.Framework;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace TestsDGT.Paginas.Usuarios.MiCesta;
@@ -7,48 +8,30 @@ namespace TestsDGT.Paginas.Usuarios.MiCesta;
 [TestFixture]
 public class MiCestaTest : BaseTest
 {
-    private MiCestaPage _catalogoPage;
+    private MiCestaPage _miCestaPage;
 
     [SetUp]
     public void SetupPagina()
     {
-        _catalogoPage = new MiCestaPage(Page);
+        _miCestaPage = new MiCestaPage(Page);
     }
 
     [Test]
-    public async Task AgregarArticuloCarrito()
+    public async Task IrACesta()
     {
-        await _catalogoPage.IrACatalogoAsync();
+        await _miCestaPage.IrACestaAsync();
 
-        await _catalogoPage.AgregarProductoAlCarritoAsync("5117", "L", "2");
-
-        var mensaje = await _catalogoPage.ObtenerMensajeToastAsync();
-        Assert.That(mensaje, Does.Contain("Se añadió CHALECO AIRBAG (talla L) x2 a la cesta."));
+        await Assertions.Expect(Page).ToHaveURLAsync(new Regex(".*/app-cart.*"));
     }
 
     [Test]
-    public async Task FiltroLotes_SinResultados()
+    public async Task PedidoOrdinarioExito()
     {
-        await _catalogoPage.IrACatalogoAsync();
-        await _catalogoPage.IrALotesDisponiblesAsync();
+        await _miCestaPage.IrACestaAsync();
 
-        string nombre = "lote inventado";
-        await _catalogoPage.FiltrarPorLoteAsync(nombre);
+        await _miCestaPage.TramitarPedidoOrdinarioAsync();
 
-        var mensajeVacio = await _catalogoPage.ExisteElementoEnTablaAsync(nombre);
-        Assert.That(mensajeVacio, Is.True);
-    }
-
-    [Test]
-    public async Task AgregarLoteCarrito()
-    {
-        await _catalogoPage.IrACatalogoAsync();
-        await _catalogoPage.IrALotesDisponiblesAsync();
-
-        string codigo = "LT-00059";
-        await _catalogoPage.AgregarLoteAlCarritoAsync(codigo);
-
-        var mensaje = await _catalogoPage.ObtenerMensajeToastAsync();
-        Assert.That(mensaje, Does.Contain("Lote \"Prueba Test\" añadido correctamente a la cesta."));
+        var mensaje = await _miCestaPage.ObtenerMensajeToastAsync();
+        Assert.That(mensaje, Does.Contain("Pedido realizado con éxito."));
     }
 }

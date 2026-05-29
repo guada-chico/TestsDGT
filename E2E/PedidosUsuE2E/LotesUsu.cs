@@ -1,8 +1,7 @@
 using Microsoft.Playwright;
 using NUnit.Framework;
-using TestsDGT.Paginas;
 
-namespace TestsDGT.Paginas.Usuarios.LotesUsu;
+namespace TestsDGT.E2E.PedidosUsuE2E;
 
 [TestFixture]
 public class LotesUsuTest : BaseTest

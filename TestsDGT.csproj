@@ -29,6 +29,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="E2E\PedidosEscuelaE2E\" />
+    <Folder Include="E2E\PedidosExtraUsuE2E\" />
     <Folder Include="Paginas\Administrador\GestionManuales\" />
     <Folder Include="Paginas\Administrador\FaqContactoAdm\" />
     <Folder Include="Paginas\Administrador\GestionUsuarios\" />
