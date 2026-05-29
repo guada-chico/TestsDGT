@@ -67,11 +67,20 @@ public class CatalogoPage
 
     public async Task AgregarDatosProductoAsync(string talla, string cantidad)
     {
-        await ComboTalla.ClickAsync();
-        await _page.GetByRole(AriaRole.Option, new() { Name = talla }).ClickAsync();
+        await ComboTalla.Locator(".p-select-dropdown, .p-dropdown-trigger").ClickAsync();
 
-        await InputCantidad.ClickAsync();
-        await _page.GetByRole(AriaRole.Option, new() { Name = cantidad }).ClickAsync();
+        var opcionTalla = _page.Locator(".p-dropdown-item:visible, .p-select-option:visible")
+                           .GetByText(talla, new() { Exact = true });
+        await opcionTalla.WaitForAsync(new() { State = WaitForSelectorState.Visible, Timeout = 4000 });
+        await opcionTalla.ClickAsync();
+        await _page.WaitForTimeoutAsync(200);
+
+        await InputCantidad.Locator(".p-select-dropdown, .p-dropdown-trigger").ClickAsync();
+
+        var opcionCantidad = _page.Locator(".p-dropdown-item:visible, .p-select-option:visible")
+                                   .GetByText(cantidad, new() { Exact = true });
+        await opcionCantidad.WaitForAsync(new() { State = WaitForSelectorState.Visible, Timeout = 4000 });
+        await opcionCantidad.ClickAsync();
 
         await _page.WaitForLoadStateAsync(LoadState.NetworkIdle);
     }

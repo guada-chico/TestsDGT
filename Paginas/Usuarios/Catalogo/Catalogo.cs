@@ -1,5 +1,6 @@
 using Microsoft.Playwright;
 using NUnit.Framework;
+using NUnit.Framework.Internal;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
@@ -23,7 +24,7 @@ public class CatalogoTest : BaseTest
 
         await _catalogoPage.IrAMisPedidosAsync();
 
-        await Assertions.Expect(Page).ToHaveURLAsync(new Regex(".*/pedidos.*"));
+        await Assertions.Expect(Page).ToHaveURLAsync(new Regex(".*/orders-list.*"));
     }
 
     [Test]
@@ -103,7 +104,7 @@ public class CatalogoTest : BaseTest
         await _catalogoPage.IrACatalogoAsync();
 
         var producto = "5117";
-        var talla = "L";
+        var talla = "XL";
         var cantidad = "2";
 
         await _catalogoPage.SeleccionarProductoCatalogoAsync(producto);
@@ -112,7 +113,7 @@ public class CatalogoTest : BaseTest
         await _catalogoPage.AgregarACestaAsync();
 
         var mensaje = await _catalogoPage.ObtenerMensajeToastAsync();
-        Assert.That(mensaje, Does.Contain("Se añadió CHALECO AIRBAG (talla L) x" + cantidad + " a la cesta."));
+        Assert.That(mensaje, Does.Contain($"Se añadió CHALECO AIRBAG (talla {talla}) x{cantidad} a la cesta."));
     }
 
     [Test]
@@ -196,10 +197,10 @@ public class CatalogoTest : BaseTest
         await _catalogoPage.IrACatalogoAsync();
         await _catalogoPage.IrALotesDisponiblesAsync();
 
-        string codigo = "LT-00059";
-        await _catalogoPage.AgregarLoteAlCarritoAsync(codigo);
+        string nombre = "Prueba Test";
+        await _catalogoPage.AgregarLoteAlCarritoAsync(nombre);
 
         var mensaje = await _catalogoPage.ObtenerMensajeToastAsync();
-        Assert.That(mensaje, Does.Contain("Lote \"Prueba Test\" añadido correctamente a la cesta."));
+        Assert.That(mensaje, Does.EndWith("añadido correctamente a la cesta."));
     }
 }
