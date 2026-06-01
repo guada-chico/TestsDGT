@@ -6,10 +6,8 @@ using static System.Net.Mime.MediaTypeNames;
 
 namespace TestsDGT.Paginas.Usuarios.FaqContactoUsu;
 
-public class FaqContactoUsuPage
-{
-    private readonly IPage _page;
-    
+public class FaqContactoUsuPage : UsuariosBasePage
+{    
     private ILocator InputBuscarPregunta => _page.GetByPlaceholder("Buscar en las preguntas frecuentes...");
     private ILocator BloquesPreguntas => _page.Locator("p-accordiontab:visible, .p-accordion-header:visible");
     private ILocator InputNombreContacto => _page.Locator("input[name='nombre']");
@@ -17,12 +15,8 @@ public class FaqContactoUsuPage
     private ILocator InputAsuntoContacto => _page.Locator("input[name='asunto']");
     private ILocator InputMensajeContacto => _page.Locator("textarea[name='mensaje']");
     private ILocator BotonEnviarContacto => _page.GetByRole(AriaRole.Button, new() { Name = "Enviar" });
-    private ILocator ToastMensaje => _page.Locator(".p-toast");
 
-    public FaqContactoUsuPage(IPage page)
-    {
-        _page = page;
-    }
+    public FaqContactoUsuPage(IPage page) : base(page) { }
 
     public async Task BuscarPreguntaAsync(string texto)
     {
@@ -58,12 +52,6 @@ public class FaqContactoUsuPage
 
         await BotonEnviarContacto.ClickAsync();
         await _page.WaitForLoadStateAsync(LoadState.NetworkIdle);
-    }
-
-    public async Task<string> ObtenerMensajeToastAsync()
-    {
-        await ToastMensaje.WaitForAsync(new() { State = WaitForSelectorState.Visible, Timeout = 5000 });
-        return await ToastMensaje.InnerTextAsync();
     }
 
     public async Task<int> ObtenerNumeroPreguntasVisiblesAsync()

@@ -5,10 +5,8 @@ using System.Threading.Tasks;
 
 namespace TestsDGT.Paginas.Usuarios.IncidenciasUsu;
 
-public class IncidenciasUsuPage
-{
-    private readonly IPage _page;
-    
+public class IncidenciasUsuPage : UsuariosBasePage
+{    
     private ILocator BotonNuevaIncidencia => _page.Locator("button").Filter(new() { Has = _page.Locator(".pi-plus") });
     private ILocator InputTituloIncidencia => _page.Locator("#titulo");
     private ILocator ComboPrioridad => _page.GetByRole(AriaRole.Combobox, new() { Name = "Media" });
@@ -17,18 +15,13 @@ public class IncidenciasUsuPage
     private ILocator InputArchivo => _page.Locator("input[type='file']");
     private ILocator InputDescripcion => _page.Locator("#descripcion");
     private ILocator BotonEnviarIncidencia => _page.Locator("button").Filter(new() { Has = _page.Locator(".pi-check") });
-    private ILocator ToastMensaje => _page.Locator(".p-toast");
 
     private ILocator InputFiltroTituloIncidencia => _page.GetByPlaceholder("Buscar por título");
     private ILocator InputFiltroFechaIncidencia => _page.Locator("p-calendar input[placeholder='dd/mm/aaaa']");
     private ILocator BotonAplicarFiltro => _page.Locator("button").Filter(new() { Has = _page.Locator(".pi-filter") });
-    private ILocator BotonLimpiarFiltros => _page.Locator("button").Filter(new() { Has = _page.Locator(".pi-times") });
     private ILocator FilasTablaIncidencias => _page.Locator("tbody tr");
 
-    public IncidenciasUsuPage(IPage page)
-    {
-        _page = page;
-    }
+    public IncidenciasUsuPage(IPage page) : base(page) { }
 
     public async Task CrearNuevaIncidenciaAsync(string titulo, string prioridad, string motivo, string idPedido, string rutaArchivo, string descripcion)
     {

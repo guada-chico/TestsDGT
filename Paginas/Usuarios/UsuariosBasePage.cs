@@ -2,22 +2,27 @@ using Microsoft.Playwright;
 using NUnit.Framework;
 using System.Threading.Tasks;
 
-namespace TestsDGT.Paginas.Usuarios.Catalogo;
+namespace TestsDGT.Paginas.Usuarios;
 
-public class CatalogoPage : UsuariosBasePage
+public abstract class UsuariosBasePage
 {
-    private ILocator BotonIrAMisPedidos => _page.GetByRole(AriaRole.Button, new() { Name = "Mis pedidos" });
+    protected readonly IPage _page;
+    protected ILocator InputBuscarCodigo => _page.GetByPlaceholder("Buscar por código");
+    protected ILocator InputBuscarNombre => _page.GetByPlaceholder("Buscar por nombre");
+    protected ILocator BotonFiltrar => _page.Locator(".pi-filter");
+    protected ILocator BotonLimpiarFiltros => _page.Locator(".pi-times");
 
-    private ILocator ComboTalla => _page.Locator("#talla");
-    private ILocator InputCantidad => _page.Locator("#cantidad");
-    private ILocator BotonAgregarCesta => _page.GetByRole(AriaRole.Button, new() { Name = "Añadir a la cesta" });
-    private ILocator BotonVolverCatalogo => _page.GetByRole(AriaRole.Button, new() { Name = "Volver al catálogo" });
+    protected ILocator BotonVerDetalle => _page.Locator("button").Filter(new() { Has = _page.Locator("button.p-button-icon-only") });
 
-    private ILocator InputFiltroLote => _page.GetByRole(AriaRole.Textbox, new() { Name = "Buscar por código o nombre" });
-    private ILocator BotonPaginaLotesDisponibles => _page.GetByRole(AriaRole.Button, new() { Name = "Lotes disponibles" });
-    private ILocator BotonAgregarLote => _page.GetByRole(AriaRole.Button, new() { Name = "Añadir" });
+    protected ILocator FilasTabla => _page.Locator("tbody tr");
+    protected ILocator CeldaTabla(string texto) => _page.Locator("td").Filter(new() { HasText = texto });
+    protected ILocator ToastMensaje => _page.Locator(".p-toast");
 
-    public CatalogoPage(IPage page) : base(page) { }
+
+    public UsuariosBasePage(IPage page)
+    {
+        _page = page;
+    }
 
     public async Task FiltrarPorCodigoAsync(string codigo)
     {
