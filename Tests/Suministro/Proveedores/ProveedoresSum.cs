@@ -2,11 +2,12 @@ using System.Text.RegularExpressions;
 using Microsoft.Playwright;
 using NUnit.Framework;
 using System.Threading.Tasks;
+using TestsDGT.Paginas.Suministro.Proveedores;
 
-namespace TestsDGT.Paginas.Suministro.Proveedores;
+namespace TestsDGT.Tests.Suministro.Proveedores;
 
 [TestFixture]
-public class ProvedoresSumTest : BaseTest
+public class ProveedoresSumTest : BaseTest
 {
     private ProveedoresSumPage _proveedoresSumPage;
 

@@ -2,10 +2,9 @@ using Microsoft.Playwright;
 using NUnit.Framework;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using TestsDGT.Paginas.Suministro.OrdenProduccion;
-using TestsDGT.Paginas.Suministro.Proveedores;
+using TestsDGT.Paginas.Suministro.Conformidad;
 
-namespace TestsDGT.Paginas.Suministro.Conformidad;
+namespace TestsDGT.Test.Suministro.ConformidadSum;
 
 [TestFixture]
 public class ConformidadSumTest : BaseTest

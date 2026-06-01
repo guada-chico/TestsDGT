@@ -2,9 +2,9 @@ using Microsoft.Playwright;
 using NUnit.Framework;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using TestsDGT.Paginas.Suministro.Proveedores;
+using TestsDGT.Paginas.Suministro.OrdenProduccion;
 
-namespace TestsDGT.Paginas.Suministro.OrdenProduccion;
+namespace TestsDGT.Tests.Suministro.OrdenProduccion;
 
 [TestFixture]
 public class OrdenProduccionTest : BaseTest
