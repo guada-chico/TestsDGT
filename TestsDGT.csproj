@@ -38,7 +38,6 @@
     <Folder Include="Paginas\Administrador\Plantillas\" />
     <Folder Include="Paginas\Administrador\PermisosUsuario\" />
     <Folder Include="Paginas\Administrador\PuntosEntrega\" />
-    <Folder Include="Paginas\Almacen\GestionArticulos\" />
     <Folder Include="Paginas\Almacen\EntregaInmediata\" />
     <Folder Include="Paginas\Almacen\Stock\" />
     <Folder Include="Paginas\Almacen\PreparacionPedidos\" />
