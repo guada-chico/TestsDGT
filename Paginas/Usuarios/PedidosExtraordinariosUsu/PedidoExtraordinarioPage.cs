@@ -28,41 +28,33 @@ public class PedidoExtraordinarioPage
 
     public async Task RealizarPedidoExtraordinarioAsync(string articulo, string talla, string cantidad, string motivo, bool urgente = false)
     {
-        // 1. Selección de Artículo (Solo si no viene vacío en el test de error)
         if (!string.IsNullOrEmpty(articulo))
         {
             await InputArticulo.ClickAsync();
             await _page.GetByRole(AriaRole.Option, new() { Name = articulo }).ClickAsync();
         }
 
-        // 2. Selección de Talla
         if (!string.IsNullOrEmpty(talla))
         {
             await InputTalla.ClickAsync();
             await _page.GetByRole(AriaRole.Option, new() { Name = talla }).ClickAsync();
         }
 
-        // 3. Si es urgente, activamos los campos extra de urgencia que tenía el HTML
         if (urgente)
         {
             await RadioUrgente.CheckAsync();
             await ComboMotivoUrgencia.ClickAsync();
-            // Seleccionamos la primera opción por defecto del motivo de urgencia
             await _page.GetByRole(AriaRole.Option, new() { Name = "Deterioro prematuro de las" }).ClickAsync();
 
-            // Subimos el justificante de urgencia obligatorio (#archivoUrgencia)
             await InputArchivoJustificante.SetInputFilesAsync(@"C:\repos\TestsDGT\6073873.png");
         }
 
-        // 4. Rellenar cantidad y el archivo principal del pedido (#archivo)
         await InputCantidad.FillAsync(cantidad);
         await InputArchivoPliego.SetInputFilesAsync(@"C:\repos\TestsDGT\6073873.png");
 
-        // 5. Confirmación y motivo final
         await CheckConfirmarTalla.CheckAsync();
         await InputMotivo.FillAsync(motivo);
 
-        // 6. Enviar
         await BotonRealizar.ClickAsync();
         await _page.WaitForLoadStateAsync(LoadState.NetworkIdle);
     }

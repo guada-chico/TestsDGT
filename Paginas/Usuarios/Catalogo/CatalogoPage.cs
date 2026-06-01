@@ -15,6 +15,7 @@ public class CatalogoPage
 
     private ILocator BotonIrAMisPedidos => _page.GetByRole(AriaRole.Button, new() { Name = "Mis pedidos" });
 
+    private ILocator BotonVerDetalle => _page.Locator("button").Filter(new() { Has = _page.Locator("button.p-button-icon-only") });
     private ILocator ComboTalla => _page.Locator("#talla");
     private ILocator InputCantidad => _page.Locator("#cantidad");
     private ILocator BotonAgregarCesta => _page.GetByRole(AriaRole.Button, new() { Name = "Añadir a la cesta" });
@@ -60,7 +61,7 @@ public class CatalogoPage
     {
         var filaProducto = _page.GetByRole(AriaRole.Row).Filter(new() { HasText = codigoProd });
         await filaProducto.WaitForAsync();
-        await filaProducto.Locator("button.p-button-icon-only").ClickAsync();
+        await filaProducto.Locator(BotonVerDetalle).ClickAsync();
 
         await _page.WaitForLoadStateAsync(LoadState.NetworkIdle);
     }
