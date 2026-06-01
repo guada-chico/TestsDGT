@@ -7,7 +7,7 @@ using TestsDGT.Paginas.Suministro.Conformidad;
 using TestsDGT.Paginas.Suministro.OrdenProduccion;
 using TestsDGT.Paginas.Suministro.Proveedores;
 
-namespace TestsDGT.E2E.PedidosUsuE2E;
+namespace TestsDGT.Tests.E2E.PedidosExtraUsuE2E;
 
 [TestFixture]
 public class E2EPedidosExtraTest : BaseTest

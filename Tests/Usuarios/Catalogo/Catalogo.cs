@@ -3,8 +3,9 @@ using NUnit.Framework;
 using NUnit.Framework.Internal;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using TestsDGT.Paginas.Usuarios.Catalogo;
 
-namespace TestsDGT.Paginas.Usuarios.Catalogo;
+namespace TestsDGT.Tests.Usuarios.Catalogo;
 
 [TestFixture]
 public class CatalogoTest : BaseTest

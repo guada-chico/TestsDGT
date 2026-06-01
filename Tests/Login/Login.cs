@@ -1,9 +1,9 @@
 using Microsoft.Playwright;
 using NUnit.Framework;
 using System.Text.RegularExpressions;
-using TestsDGT.Paginas;
+using TestsDGT.Paginas.Login;
 
-namespace TestsDGT.Paginas.Login;
+namespace TestsDGT.Tests.Login;
 
 [TestFixture]
 public class LoginTests

@@ -2,9 +2,9 @@ using System.Text.RegularExpressions;
 using Microsoft.Playwright;
 using NUnit.Framework;
 using System.Threading.Tasks;
+using TestsDGT.Paginas.Usuarios.FaqContactoUsu;
 
-namespace TestsDGT.Paginas.Usuarios.FaqContactoUsu
-    ;
+namespace TestsDGT.Tests.Usuarios.FaqContactoUsu;
 
 [TestFixture]
 public class FaqContactoUsuTest : BaseTest

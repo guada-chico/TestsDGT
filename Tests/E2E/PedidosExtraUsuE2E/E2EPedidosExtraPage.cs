@@ -2,7 +2,7 @@ using Microsoft.Playwright;
 using NUnit.Framework;
 using System.Threading.Tasks;
 
-namespace TestsDGT.E2E.PedidosUsuE2E;
+namespace TestsDGT.Tests.E2E.PedidosExtraUsuE2E;
 
 public class E2EPedidosExtraPage
 {

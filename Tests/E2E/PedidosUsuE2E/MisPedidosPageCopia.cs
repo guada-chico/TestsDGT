@@ -1,6 +1,6 @@
 using Microsoft.Playwright;
 
-namespace TestsDGT.E2E.PedidosUsuE2E;
+namespace TestsDGT.Tests.E2E.PedidosUsuE2E;
 
 public class MisPedidosPageCopia
 {

@@ -29,7 +29,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="E2E\PedidosEscuelaE2E\" />
+    <Folder Include="Tests\E2E\PedidosEscuelaE2E\" />
     <Folder Include="Paginas\Administrador\GestionManuales\" />
     <Folder Include="Paginas\Administrador\FaqContactoAdm\" />
     <Folder Include="Paginas\Administrador\GestionUsuarios\" />
@@ -52,6 +52,28 @@
     <Folder Include="Paginas\Peticiones\GestionDevoluciones\" />
     <Folder Include="Paginas\Peticiones\ResolucionPeticiones\" />
     <Folder Include="Paginas\Usuarios\PerfilUsu\" />
+    <Folder Include="Tests\Administrador\FaqContactoAdm\" />
+    <Folder Include="Tests\Administrador\GestionLotes\" />
+    <Folder Include="Tests\Administrador\GestionManuales\" />
+    <Folder Include="Tests\Administrador\GestionUsuarios\" />
+    <Folder Include="Tests\Administrador\MenuNotificaciones\" />
+    <Folder Include="Tests\Administrador\PermisosUsuario\" />
+    <Folder Include="Tests\Administrador\Plantillas\" />
+    <Folder Include="Tests\Administrador\PuntosEntrega\" />
+    <Folder Include="Tests\Almacen\EntregaInmediata\" />
+    <Folder Include="Tests\Almacen\PreparacionPedidos\" />
+    <Folder Include="Tests\Almacen\Stock\" />
+    <Folder Include="Tests\Informes\Devoluciones\" />
+    <Folder Include="Tests\Informes\InformeDinamico\" />
+    <Folder Include="Tests\Informes\PedidosInf\" />
+    <Folder Include="Tests\Informes\PrevisionAnual\" />
+    <Folder Include="Tests\Informes\Revista\" />
+    <Folder Include="Tests\Peticiones\EntregasDestacamento\" />
+    <Folder Include="Tests\Peticiones\GeneracionAlbaran\" />
+    <Folder Include="Tests\Peticiones\GestionDevoluciones\" />
+    <Folder Include="Tests\Peticiones\GestionIncidencias\" />
+    <Folder Include="Tests\Peticiones\ResolucionPeticiones\" />
+    <Folder Include="Tests\Usuarios\PerfilUsu\" />
   </ItemGroup>
 
 </Project>

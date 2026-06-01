@@ -2,8 +2,9 @@ using Microsoft.Playwright;
 using NUnit.Framework;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using TestsDGT.Paginas.Usuarios.MiCesta;
 
-namespace TestsDGT.Paginas.Usuarios.MiCesta;
+namespace TestsDGT.Tests.Usuarios.MiCesta;
 
 [TestFixture]
 public class MiCestaTest : BaseTest

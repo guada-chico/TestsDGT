@@ -2,7 +2,7 @@ using Microsoft.Playwright;
 using NUnit.Framework;
 using TestsDGT.Paginas;
 
-namespace TestsDGT.E2E.PedidosUsuE2E;
+namespace TestsDGT.Tests.E2E.PedidosUsuE2E;
 
 [TestFixture]
 public class MisPedidosUsuCopiaTest : BaseTest

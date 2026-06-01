@@ -1,10 +1,10 @@
 using Microsoft.Playwright;
 using NUnit.Framework;
 using System.Text.RegularExpressions;
-using TestsDGT.Paginas;
 using TestsDGT.Paginas.Usuarios.Catalogo;
+using TestsDGT.Paginas.Usuarios.MisPedidosUsu;
 
-namespace TestsDGT.Paginas.Usuarios.MisPedidosUsu;
+namespace TestsDGT.Tests.Usuarios.MisPedidosUsu;
 
 [TestFixture]
 public class MisPedidosUsuTest : BaseTest

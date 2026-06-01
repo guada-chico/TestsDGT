@@ -2,8 +2,9 @@ using System.Text.RegularExpressions;
 using Microsoft.Playwright;
 using NUnit.Framework;
 using System.Threading.Tasks;
+using TestsDGT.Paginas.Usuarios.IncidenciasUsu;
 
-namespace TestsDGT.Paginas.Usuarios.IncidenciasUsu;
+namespace TestsDGT.Tests.Usuarios.IncidenciasUsu;
 
 [TestFixture]
 public class IncidenciasUsuTest : BaseTest

@@ -4,7 +4,7 @@ using NUnit.Framework;
 using System.Threading.Tasks;
 using TestsDGT.Paginas.Usuarios.PedidosExtraordinarioUsu;
 
-namespace TestsDGT.Paginas.Usuarios.PedidosExtraordinariosUsu;
+namespace TestsDGT.Tests.Usuarios.PedidosExtraordinariosUsu;
 
 [TestFixture]
 public class PedidoExtraordinarioUsuTest : BaseTest
