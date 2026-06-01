@@ -20,8 +20,6 @@ public class ConformidadSumPage
     private ILocator InputCantidadRecibida => _page.GetByPlaceholder("0");
     private ILocator BotonRegistrarConformidad => _page.GetByRole(AriaRole.Button, new() { Name = "Registrar conformidad" });
     private ILocator BotonCancelarVerificacion => _page.GetByRole(AriaRole.Button, new() { Name = "Cancelar" });
-    private ILocator AgregarNuevaVerificacion => _page.GetByRole(AriaRole.Button, new() { Name = "Añadir Nueva Verificación" });
-
 
     private ILocator ToastMensaje => _page.Locator(".p-toast:visible");
     private ILocator ToastMensajeDetalle => ToastMensaje.Locator(".p-toast-detail"); 
