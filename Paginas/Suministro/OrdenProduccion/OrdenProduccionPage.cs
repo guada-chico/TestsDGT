@@ -5,10 +5,8 @@ using System.Threading.Tasks;
 
 namespace TestsDGT.Paginas.Suministro.OrdenProduccion;
 
-public class OrdenProduccionPage
+public class OrdenProduccionPage : SuministroBasePage
 {
-    private readonly IPage _page;
-
     private ILocator BotonNuevaOrdenProduccion => _page.Locator("button").Filter(new() { Has = _page.Locator(".pi-plus") });
     private ILocator InputExpedienteOrden => _page.GetByPlaceholder("Introduzca el expediente");
     private ILocator InputLoteOrden => _page.GetByPlaceholder("Introduzca el lote");
@@ -29,9 +27,6 @@ public class OrdenProduccionPage
 
     private ILocator BotonConfirmarEnvioOP => _page.Locator("button.p-confirmdialog-accept-button");
     private ILocator BotonCancelarEnvioOP => _page.Locator("button.p-confirmdialog-reject-button");
-
-    private ILocator ToastMensaje => _page.Locator(".p-toast:visible");
-    private ILocator ToastMensajeDetalle => ToastMensaje.Locator(".p-toast-detail"); 
     
     private ILocator InputFiltroCodigoExpedienteOP => _page.GetByPlaceholder("Buscar por código o expediente");
     private ILocator ComboFiltroProveedorOD => _page.Locator("p-dropdown[placeholder='Todos los proveedores']");
@@ -39,7 +34,6 @@ public class OrdenProduccionPage
     private ILocator BotonLimpiarFiltros => _page.Locator("button").Filter(new() { Has = _page.Locator(".pi-times") });
     private ILocator FilasTablaOrdenProduccion => _page.Locator("tbody tr");
 
-    private ILocator BotonMasOpciones => _page.Locator("button").Filter(new() { Has = _page.Locator(".pi-ellipsis-v") });
     private ILocator BotonImprimirDesdeMasOpciones => _page.GetByRole(AriaRole.Menuitem, new() { Name = "Imprimir" });
     private ILocator OpcionVerDetalleOrdenProduccion => _page.GetByRole(AriaRole.Menuitem, new() { Name = "Ver detalle" });
 
@@ -48,10 +42,7 @@ public class OrdenProduccionPage
     private ILocator BotonImprimirOrdenProduccion => _page.GetByRole(AriaRole.Button, new() { Name = "Imprimir" });
     private ILocator BotonEnviarCorreoAProveedor => _page.GetByRole(AriaRole.Button, new() { Name = "Enviar" });
 
-    public OrdenProduccionPage(IPage page)
-    {
-        _page = page;
-    }
+    public OrdenProduccionPage(IPage page) : base(page){ }
 
     public async Task IrACrearOrdenProduccionAsync()
     {
@@ -225,38 +216,9 @@ public class OrdenProduccionPage
         catch { return false; }
     }
 
-    public async Task<bool> VerificarTextoEnTablaAsync(string textoBuscar)
-    {
-        try
-        {
-            var celda = _page.Locator("td").GetByText(textoBuscar, new() { Exact = false }).First;
-            await Assertions.Expect(celda).ToBeVisibleAsync(new() { Timeout = 5000 });
-            return true;
-        }
-        catch (Exception)
-        {
-            return false;
-        }
-    }
-
-    public async Task<string> ObtenerMensajeToastAsync()
-    {
-        var ultimoToast = ToastMensajeDetalle.Last;
-
-        await ultimoToast.WaitForAsync(new() { State = WaitForSelectorState.Visible, Timeout = 15000 });
-
-        return await ultimoToast.InnerTextAsync();
-    }
-
     public async Task<int> ObtenerNumeroFilasOrdenesProduccionAsync()
     {
         return await FilasTablaOrdenProduccion.CountAsync();
-    }
-
-    public async Task LimpiarFiltrosAsync()
-    {
-        await BotonLimpiarFiltros.ClickAsync();
-        await _page.WaitForLoadStateAsync(LoadState.NetworkIdle);
     }
 
     public async Task IrAOrdenProduccion()

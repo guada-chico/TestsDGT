@@ -70,19 +70,6 @@ public class ConformidadSumPage : SuministroBasePage
         await BotonCancelarVerificacion.ClickAsync();
     }
 
-    
-
-    /*
-    public async Task FinalizarYGuardarOrdenAsync()
-    {
-        await BotonGuardarOrden.ClickAsync();
-
-        await BotonConfirmarEnvioOP.WaitForAsync(new() { State = WaitForSelectorState.Visible, Timeout = 5000 });
-
-        await BotonConfirmarEnvioOP.ClickAsync();
-    }
-    */
-
     public async Task<bool> VerificarConformidadSumAsync(string expediente)
     {
         try
@@ -96,5 +83,11 @@ public class ConformidadSumPage : SuministroBasePage
     public async Task<int> ObtenerNumeroFilasConformidadSumAsync()
     {
         return await FilasTablaConformidadSum.CountAsync();
+    }
+
+    public async Task IrAConformidadSuministro()
+    {
+        await _page.GotoAsync("http://192.168.200.51:7001/dgt-front/#/conformidad-suministro");
+        await _page.WaitForURLAsync("**/conformidad-suministro");
     }
 }

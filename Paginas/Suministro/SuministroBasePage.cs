@@ -54,10 +54,4 @@ public abstract class SuministroBasePage
     {
         return await FilasTabla.CountAsync();
     }
-
-    public async Task IrAConformidadSuministro()
-    {
-        await _page.GotoAsync("http://192.168.200.51:7001/dgt-front/#/conformidad-suministro");
-        await _page.WaitForURLAsync("**/conformidad-suministro");
-    }
 }

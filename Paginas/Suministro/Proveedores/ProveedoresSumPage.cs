@@ -5,10 +5,8 @@ using System.Threading.Tasks;
 
 namespace TestsDGT.Paginas.Suministro.Proveedores;
 
-public class ProveedoresSumPage
+public class ProveedoresSumPage : SuministroBasePage
 {
-    private readonly IPage _page;
-
     private ILocator BotonNuevoProveedor => _page.GetByRole(AriaRole.Button, new() { Name = "Añadir", Exact = true });
     private ILocator InputNombreProveedor => _page.Locator("#nombre");
     private ILocator InputRazonSocialProveedor => _page.Locator("#razonSocial"); 
@@ -24,23 +22,15 @@ public class ProveedoresSumPage
     private ILocator BotonGuardarProveedor => _page.GetByRole(AriaRole.Button, new() { Name = "Guardar", Exact = true });
     private ILocator BotonCancelarEdicionProveedor => _page.GetByRole(AriaRole.Button, new() { Name = "Cancelar", Exact = true });
     private ILocator BotónConfirmarCancelarProveedor => _page.GetByRole(AriaRole.Button, new() { Name = "Salir sin guardar", Exact = true });
-    private ILocator ToastMensaje => _page.Locator(".p-toast");
 
     private ILocator InputFiltroCodigoNombreProveedor => _page.GetByPlaceholder("Buscar por código o nombre");
-    private ILocator BotonAplicarFiltro => _page.Locator("button").Filter(new() { Has = _page.Locator(".pi-filter") });
-    private ILocator BotonLimpiarFiltros => _page.Locator("button").Filter(new() { Has = _page.Locator(".pi-times") });
-    private ILocator FilasTablaProveedores => _page.Locator("tbody tr");
 
-    private ILocator BotonMasOpcionesProveedor => _page.Locator("button").Filter(new() { Has = _page.Locator(".pi-ellipsis-v") }).First;
     private ILocator OpcionEditarProveedor => _page.GetByRole(AriaRole.Menuitem, new() { Name = "Editar", Exact = true });
     private ILocator BotonEliminarProveedor => _page.Locator("button.p-button-danger");
     private ILocator PopupEliminarProveedor => _page.Locator(".p-dialog-footer");
     private ILocator BotonConfirmarEliminarProveedor => _page.Locator("button.p-confirmdialog-accept-button");
 
-    public ProveedoresSumPage(IPage page)
-    {
-        _page = page;
-    }
+    public ProveedoresSumPage(IPage page) : base(page) { }
 
     public async Task CrearNuevoProveedorAsync(string nombre, string razonSocial, string cifNif, string web, string direccion, string telefono, string contacto, string correoElectronico, string estado, string observaciones)
     {
@@ -87,16 +77,10 @@ public class ProveedoresSumPage
         await BotónConfirmarCancelarProveedor.ClickAsync();
     }
 
-    public async Task<string> ObtenerMensajeToastAsync()
-    {
-        await ToastMensaje.WaitForAsync(new() { State = WaitForSelectorState.Visible, Timeout = 8000 });
-        return await ToastMensaje.InnerTextAsync();
-    }
-
     public async Task FiltrarPorCodigoNombreProveedorAsync(string codigoProveedor)
     {
         await InputFiltroCodigoNombreProveedor.FillAsync(codigoProveedor);
-        await BotonAplicarFiltro.ClickAsync();
+        await BotonFiltrar.ClickAsync();
         await _page.WaitForLoadStateAsync(LoadState.NetworkIdle);
     }
 
@@ -105,37 +89,16 @@ public class ProveedoresSumPage
         return await _page.Locator("td").GetByText(nombreProveedor, new() { Exact = true }).IsVisibleAsync();
     }
 
-    public async Task<bool> VerificarTextoEnTablaAsync(string textoBuscar)
-    {
-        try
-        {
-            var celda = _page.Locator("td").GetByText(textoBuscar, new() { Exact = false }).First;
-            await Assertions.Expect(celda).ToBeVisibleAsync(new() { Timeout = 5000 });
-            return true;
-        }
-        catch (Exception)
-        {
-            return false;
-        }
-    }
-
     public async Task<int> ObtenerNumeroFilasProveedoresAsync()
     {
-        return await FilasTablaProveedores.CountAsync();
-    }
-
-    public async Task LimpiarFiltrosAsync()
-    {
-        await BotonLimpiarFiltros.ClickAsync();
-        await _page.WaitForLoadStateAsync(LoadState.NetworkIdle);
-        await _page.WaitForTimeoutAsync(500);
+        return await FilasTabla.CountAsync();
     }
 
     public async Task EditarProveedorAsync(string nombreProveedor, string nuevoNombre)
     {
         var filaProveedor = _page.Locator("tr").Filter(new() { HasText = nombreProveedor });
 
-        await BotonMasOpcionesProveedor.ClickAsync();
+        await BotonMasOpciones.ClickAsync();
 
         await OpcionEditarProveedor.ClickAsync();
 
@@ -160,7 +123,7 @@ public class ProveedoresSumPage
     public async Task EliminarProveedorAsync(string nombreProveedor)
     {
         var filaProveedor = _page.Locator("tr").Filter(new() { HasText = nombreProveedor });
-        await BotonMasOpcionesProveedor.ClickAsync();
+        await BotonMasOpciones.ClickAsync();
         await OpcionEditarProveedor.ClickAsync();
 
         await BotonEliminarProveedor.ClickAsync();

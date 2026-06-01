@@ -106,20 +106,6 @@ public class ConformidadSumTest : BaseTest
     }
 
     /*
-    [Test]
-    public async Task CambiarEstadoOrdenProduccion()
-    {
-        await _conformidadSumPage.IrAConformidadSuministro();
-
-        string expedienteConformidadSum = "92";
-        await _conformidadSumPage.VerDetalleConformidadSumAsync(expedienteConformidadSum);
-
-        string nuevoEstado = "Entrega parcial";
-        await _conformidadSumPage.CambiarEstadoConformidadSumAsync(nuevoEstado);
-
-        var mensaje = await _conformidadSumPage.ObtenerMensajeToastAsync();
-        Assert.That(mensaje, Does.Contain("Estado actualizado correctamente"));
-    }
 
     [Test]
     public async Task ImprimirOrdenProduccion_DesdeVerDetalles()
@@ -143,43 +129,6 @@ public class ConformidadSumTest : BaseTest
 
         Assert.That(urlImpresion, Does.Contain("blob"),
                 $"La pestaña se abrió pero no parece ser un objeto de impresión en memoria. URL: {urlImpresion}");
-    }
-
-    [Test]
-    public async Task ImprimirOrdenProduccion_DesdeMasOpciones()
-    {
-        await _conformidadSumPage.IrAConformidadSuministro();
-
-        string expedienteOrdenProduccion = "92";
-
-        await _conformidadSumPage.ImprimirDesdeMasOpcionesOPAsync(expedienteOrdenProduccion);
-
-        var esperarPestañaTask = Page.Context.WaitForPageAsync();
-
-        var nuevaPestaña = await esperarPestañaTask;
-
-        await nuevaPestaña.WaitForLoadStateAsync(LoadState.Load);
-
-        string urlImpresion = nuevaPestaña.Url;
-
-        Console.WriteLine($"URL de la pestaña de impresión capturada: {urlImpresion}");
-
-        Assert.That(urlImpresion, Does.Contain("blob"),
-                $"La pestaña se abrió pero no parece ser un objeto de impresión en memoria. URL: {urlImpresion}");
-    }
-
-    [Test]
-    public async Task EnviarCorreoAProveedor() // Bug abierto
-    {
-        await _conformidadSumPage.IrAConformidadSuministro();
-
-        string expedienteConformidadSum = "92";
-        await _conformidadSumPage.VerDetalleConformidadSumAsync(expedienteConformidadSum);
-
-        await _conformidadSumPage.EnviarCorreoAProveedorAsync();
-
-        var mensaje = await _conformidadSumPage.ObtenerMensajeToastAsync();
-        Assert.That(mensaje, Does.Contain("No se pudo enviar el correo."));
     }
     */
 }
