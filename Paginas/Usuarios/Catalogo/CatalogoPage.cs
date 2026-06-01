@@ -6,7 +6,12 @@ namespace TestsDGT.Paginas.Usuarios.Catalogo;
 
 public class CatalogoPage : UsuariosBasePage
 {
-    private ILocator BotonIrAMisPedidos => _page.GetByRole(AriaRole.Button, new() { Name = "Mis pedidos" });
+    private ILocator InputBuscarCodigo => _page.GetByPlaceholder("Buscar por código");
+    private ILocator InputBuscarNombre => _page.GetByPlaceholder("Buscar por nombre");
+    private ILocator BotonFiltrar => _page.Locator(".pi-filter");
+    private ILocator BotonLimpiarFiltros => _page.Locator(".pi-times");
+
+    private ILocator BotonVerDetalle => _page.Locator("button").Filter(new() { Has = _page.Locator("button.p-button-icon-only") });
 
     private ILocator ComboTalla => _page.Locator("#talla");
     private ILocator InputCantidad => _page.Locator("#cantidad");
@@ -83,12 +88,6 @@ public class CatalogoPage : UsuariosBasePage
         await _page.WaitForLoadStateAsync(LoadState.NetworkIdle);
     }
 
-    public async Task IrAMisPedidosAsync()
-    {
-        await BotonIrAMisPedidos.ClickAsync();
-        await _page.WaitForLoadStateAsync(LoadState.NetworkIdle);
-    }
-
     public async Task FiltrarPorLoteAsync(string codigoNombre)
     {
         await InputFiltroLote.FillAsync(codigoNombre);
@@ -101,39 +100,6 @@ public class CatalogoPage : UsuariosBasePage
         await filaLote.WaitForAsync(new() { State = WaitForSelectorState.Visible });
 
         await filaLote.Locator(BotonAgregarLote).ClickAsync();
-    }
-
-    public async Task<bool> ExisteElementoEnTablaAsync(string texto)
-    {
-        try
-        {
-            await CeldaTabla(texto).First.WaitForAsync(new() { Timeout = 5000 });
-            return true;
-        }
-        catch { return false; }
-    }
-
-    public async Task<int> ObtenerNumeroFilasAsync()
-    {
-        return await FilasTabla.CountAsync();
-    }
-
-    public async Task<string> ObtenerTextoFiltroNombreAsync()
-    {
-        return await InputBuscarNombre.InputValueAsync();
-    }
-    public async Task<string> ObtenerMensajeToastAsync()
-    {
-        await ToastMensaje.WaitForAsync();
-        return await ToastMensaje.InnerTextAsync();
-    }
-
-    public async Task IrACatalogoAsync()
-    {
-        await _page.GotoAsync("http://192.168.200.51:7001/dgt-front/#/catalogo");
-        await _page.WaitForURLAsync("**/catalogo");
-
-        await _page.WaitForLoadStateAsync(LoadState.NetworkIdle);
     }
 
     public async Task IrALotesDisponiblesAsync()

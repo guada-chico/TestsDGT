@@ -19,7 +19,6 @@ public class IncidenciasUsuPage : UsuariosBasePage
     private ILocator InputFiltroTituloIncidencia => _page.GetByPlaceholder("Buscar por título");
     private ILocator InputFiltroFechaIncidencia => _page.Locator("p-calendar input[placeholder='dd/mm/aaaa']");
     private ILocator BotonAplicarFiltro => _page.Locator("button").Filter(new() { Has = _page.Locator(".pi-filter") });
-    private ILocator FilasTablaIncidencias => _page.Locator("tbody tr");
 
     public IncidenciasUsuPage(IPage page) : base(page) { }
 
@@ -48,20 +47,6 @@ public class IncidenciasUsuPage : UsuariosBasePage
 
         await BotonEnviarIncidencia.DispatchEventAsync("click");
         await _page.WaitForLoadStateAsync(LoadState.NetworkIdle);
-    }
-
-    public async Task<string> ObtenerMensajeToastAsync()
-    {
-        try
-        {
-            await Assertions.Expect(ToastMensaje).ToBeVisibleAsync(new() { Timeout = 5000 });
-            return await ToastMensaje.InnerTextAsync();
-        }
-        catch (Exception)
-        {
-            Assert.Fail("No se mostró ningún mensaje toast tras 5 segundos.");
-            return string.Empty; 
-        }
     }
 
     public async Task FiltrarPorTituloIncidenciaAsync(string titulo)
@@ -117,7 +102,7 @@ public class IncidenciasUsuPage : UsuariosBasePage
 
     public async Task<int> ObtenerNumeroFilasIncidenciasAsync()
     {
-        return await FilasTablaIncidencias.CountAsync();
+        return await FilasTabla.CountAsync();
     }
 
     public async Task LimpiarFiltrosAsync()
